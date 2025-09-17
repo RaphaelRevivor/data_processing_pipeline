@@ -1,0 +1,1 @@
+A data processing pipeline implmented using C++ and Python, compiled with Bazel.
