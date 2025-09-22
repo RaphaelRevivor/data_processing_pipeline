@@ -33,6 +33,22 @@ cc_library(
   ],
 )
 
+
+cc_library(
+  name = "csv_parser",
+  srcs = [
+    "csv_parser.csv"
+  ],
+  hdrs = [
+    "csv_parser.h"
+  ],
+  deps = [
+    ":base_parser",
+    "@nlohmann_json//:json",
+  ],
+)
+
+
 cc_library(
   name = "parser_factory",
   srcs = [
