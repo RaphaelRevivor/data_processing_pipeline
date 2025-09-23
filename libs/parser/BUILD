@@ -3,6 +3,7 @@ cc_library(
   deps = [
     ":json_parser",
     ":parser_factory",
+    ":csv_parser",
   ],
   visibility = [
     "//:__subpackages__",
@@ -37,14 +38,13 @@ cc_library(
 cc_library(
   name = "csv_parser",
   srcs = [
-    "csv_parser.csv"
+    "csv_parser.cc",
   ],
   hdrs = [
-    "csv_parser.h"
+    "csv_parser.h",
   ],
   deps = [
     ":base_parser",
-    "@nlohmann_json//:json",
   ],
 )
 
@@ -60,5 +60,6 @@ cc_library(
   deps = [
     ":base_parser",
     ":json_parser",
+    ":csv_parser",
   ],
 )
