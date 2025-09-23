@@ -1,7 +1,5 @@
 #include "csv_parser.h"
 
-using json = nlohmann::json;
-
 using namespace std;
 
 void CsvParser::parse(const string& filename)
@@ -18,53 +16,32 @@ void CsvParser::parse(const string& filename)
         cout << "Processing " << filename  << "..." << endl;
     }
 
-    size_t idx {0};
-    while(getline(file, line)){
-        map<string, string> temp_map {};
-        string header {};
-
-        //If empty line
-        if(line.empty()) {cout << "Line is empty!" << endl; continue;}
-
-        //Generates a header vector which contains the headers to use
-            for (size_t i = 0; i < line.size(); i++)
-            {
-               if(line[i] == ',' || line[i] == '\n'){
-                    headers.push_back(header);
-                    header.clear();
-                    continue;
-               } 
-               header += line[i];
-            } 
+    
+    if(getline(file, line)){
+        stringstream ss(line);
+        string header;
+        while(getline(ss, header, ',')){
             headers.push_back(header);
+        }
+    }
 
-        while(getline(file, line)){
-            for (size_t i = 0; i < line.size(); i++)
-            {
-            if(line[i] == ','){
-                idx++;
-                continue;
-            } else if(line[i] != ',' && line[i] != '\n'){
-                temp_map[headers[idx]] += line[i];        
+    while(getline(file, line)){
+        if(line.empty()) continue;
+
+        stringstream ss(line);
+        string value;
+        map<string, string> row;
+        size_t col = 0;
+
+        while(getline(ss, value, ',')){
+            if(col < headers.size()){
+                row[headers[col]] = value;
             }
+            col++;
         }
-        //Emplace back temp_map
-        rows.emplace_back(temp_map);
-        idx = 0;
-        //Clear internal vars
-        temp_map.clear();
-        header.clear();   
-        }
-        break;
-        
-
-        //Emplace back temp_map
-        rows.emplace_back(temp_map);
-        idx++;
-        //Clear internal vars
-        temp_map.clear();
-        file.close();   
-        }    
+        rows.emplace_back(row);
+    }
+    file.close();
 }
 
 vector<vector<pair<string, string>>> CsvParser::getEntries(){
@@ -94,7 +71,7 @@ vector<pair<string, string>> CsvParser::getEntryById(const string &id){
 
                 for (auto &&[key, value] : row)
                 {
-                    temp.emplace_back(make_pair(key ,value));
+                    temp.emplace_back(make_pair(key, value));
                 }
                 
             }
@@ -105,7 +82,7 @@ vector<pair<string, string>> CsvParser::getEntryById(const string &id){
 void CsvParser::print(){
     for(auto &&row: rows){
         for(auto &&[key, value]: row){
-            cout << key << ": " << value;
+            cout << key << ": " << value << " ";
         } 
         cout << endl;
     }
