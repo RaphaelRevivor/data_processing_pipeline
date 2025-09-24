@@ -3,6 +3,7 @@
 
 #include "parser.h"
 #include "json_parser.h"
+#include "csv_parser.h"
 
 shared_ptr<Parser> ParserFactory(const string& type);
 
