@@ -46,3 +46,10 @@ def test_handleNaNs():
         {'name': "0", 'age': "0"},
 
     ]
+
+# This is added temporarily to solve the pytest not able to run via Bazel issue,
+# see: https://stackoverflow.com/a/58345932.
+# This can further be eliminated using either a macro or rule
+if __name__ == "__main__":
+    import pytest
+    raise SystemExit(pytest.main([__file__]))

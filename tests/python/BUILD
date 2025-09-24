@@ -5,5 +5,6 @@ py_test(
     srcs = ["test_cleaner.py"],
     deps = [
         "//python_tools/data_cleaner:cleaner",
+        "@pip//pytest",
     ],
 )
