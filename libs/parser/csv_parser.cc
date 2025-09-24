@@ -16,7 +16,6 @@ void CsvParser::parse(const string& filename)
 
     ifstream file(filename);
     string line {""};
-    map<string, string> temp_map {};
     vector<string> headers;
 
     if(!file.is_open()){
@@ -50,7 +49,6 @@ void CsvParser::parse(const string& filename)
         }
         rows.emplace_back(row);
     }
-    file.close();
 }
 
 /**
@@ -88,11 +86,11 @@ vector<vector<pair<string, string>>> CsvParser::getEntries(){
 vector<pair<string, string>> CsvParser::getEntryById(const string &id){
 
     vector<pair<string, string>> temp = {};
-        for (auto &&row : rows){
+        for (const auto &row : rows){
 
             if(row.at("id") == id){
 
-                for (auto &&[key, value] : row)
+                for (const auto &[key, value] : row)
                 {
                     temp.emplace_back(make_pair(key, value));
                 }
@@ -111,8 +109,8 @@ vector<pair<string, string>> CsvParser::getEntryById(const string &id){
  */
 
 void CsvParser::print(){
-    for(auto &&row: rows){
-        for(auto &&[key, value]: row){
+    for(const auto &row: rows){
+        for(const auto &[key, value]: row){
             cout << key << ": " << value << " ";
         } 
         cout << endl;
