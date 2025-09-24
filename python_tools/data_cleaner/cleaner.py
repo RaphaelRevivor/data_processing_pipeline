@@ -1,18 +1,23 @@
 import numpy as np
 
-def cleaner():
-    print("Cleaning block")
-
 def dropMissingRows(rows: list[dict]):
-    print("Dropping rows with missing values")
     for row in rows:
-        if(any(row.value is None or isinstance(row.value, float))):
-            rows.remove(row)
+        for key, value in row.items():
+            if(value is None):
+                row.clear()
+                break
+    return rows
 
-def normalizeText():
-    print("Normalizing text data")
+def normalizeText(rows: list[dict]):
+    for row in rows:
+        for key, value in row.items():
+            if(isinstance(row[key], str)):
+                row[key] = value.lower().replace(" ", "")
+    return rows
 
-def handleNaNs():
-    print("Hanlding NaN values")
-
-    
+def handleNaNs(rows: list[dict]):
+    for row in rows:
+        for key, value in row.items():
+            if(value is np.nan):
+                value = "0"
+    return rows    
