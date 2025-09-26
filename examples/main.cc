@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     return 1;
   }
 
-  // this seems like hard-coded, but it's actually stable
+  //this seems like hard-coded, but it's actually stable
   string filepath = runfiles->Rlocation("data_processing_pipeline/examples/example.json");
   cout << filepath << endl;
   auto parserPtr = ParserFactory("json");
