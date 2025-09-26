@@ -27,14 +27,6 @@ shared_ptr<Parser> CsvParserTest::parserPtr= nullptr;
 
 TEST_F(CsvParserTest, CsvParserEntries){
 
-    /**
-     * TODO: Implement CSV tests
-     * 1. Test opening the example.csv file
-     * 2. Test parsing the example.csv file
-     * 3. Test for getEntries() function
-     * 4. Test for getEntryById() function
-     */
-
     string err;
     auto runfiles = bazel::tools::cpp::runfiles::Runfiles::CreateForTest(&err);
 
@@ -49,7 +41,7 @@ TEST_F(CsvParserTest, CsvParserEntries){
     parserPtr->print();
 
     //Testing getEntries() 
-    vector<vector<pair<string, string>>> entries = parserPtr->getEntries();
+    const auto entries = parserPtr->getEntries();
     EXPECT_EQ(entries[0][0].second, "23");
     //cout << "Tested getentries" << endl;
 
