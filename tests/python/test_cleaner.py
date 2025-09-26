@@ -1,49 +1,86 @@
-from python_tools.data_cleaner import cleaner
-import numpy as np
+from python_tools.data_cleaner.cleaner import DataCleaner
 
-def test_dropMissingRows():
-    list_of_dicts = [
-        {'name': 'Alice', 'age': 30},
-        {'name': 'Bob', 'age': None},
-        {'name': None, 'age': 25},
-        {'name': 'Charlie', 'age': 35},
-    ]
-    assert cleaner.dropMissingRows(list_of_dicts) == [        
-        {'name': 'Alice', 'age': 30}, 
-        {},
-        {},
-        {'name': 'Charlie', 'age': 35}
+def test_dropMissingRowsCSV():
+    cleaner = DataCleaner("tests\python\example1.csv")
+    cleaner.readFile()
+    cleaner.dropMissingRows()
+    cleaner.readFile()
+
+    assert cleaner.filecontent == [        
+        {'id': '1', 'name': 'Alice', 'age': '30', 'score': '88'}, 
+        {'id': '3', 'name': 'Charlie', 'age': '22', 'score': '95'}
     ]
 
-def test_normalizeText():
-    list_of_dicts = [
-        {'name': 'Al ic e', 'age': 30},
-        {'name': ' Bob', 'age': 25},
-        {'name': 'C h arl ie ', 'age': 35},
-        {'name': 'Dia ngelo', 'age': 45},
+
+
+
+def test_normalizeTextCSV():
+    cleaner = DataCleaner("tests\python\example2.csv")
+    cleaner.readFile()
+    cleaner.normalizeText()
+    cleaner.readFile()
+
+    assert cleaner.filecontent == [
+        {'id': '1', 'name': 'alice', 'age': '30', 'score': '88'},
+        {'id': '2','name': 'bob', 'age': '25', 'score': '72'},
+        {'id': '3','name': 'charlie', 'age': '35', 'score': '95'},
+        {'id': '4','name': 'diana', 'age': '45', 'score': '85'},
     ]
 
-    assert cleaner.normalizeText(list_of_dicts) == [
-        {'name': 'alice', 'age': 30},
-        {'name': 'bob', 'age': 25},
-        {'name': 'charlie', 'age': 35},
-        {'name': 'diangelo', 'age': 45},
+def test_handleNaNsCSV():
+    cleaner = DataCleaner("tests\python\example3.csv")
+    cleaner.readFile()
+    cleaner.handleNaNs()
+    cleaner.readFile()
+    
+
+    assert cleaner.filecontent == [
+        {'id': '1', 'name': 'Alice', 'age': '30', 'score':'0'},
+        {'id': '2', 'name': '0', 'age': '0', 'score':'72'},
+        {'id': '3', 'name': "Charlie", 'age': '22', 'score':'95'},
+        {'id': '4', 'name': "Diana", 'age': '0', 'score':'0'},
 
     ]
 
-def test_handleNaNs():
-    list_of_dicts = [
-        {'name': 'Alice', 'age': np.nan},
-        {'name': np.nan, 'age': 25},
-        {'name': "Charlie", 'age': 35},
-        {'name': np.nan, 'age': np.nan},
+
+
+def test_dropMissingRowsJSON():
+    cleaner = DataCleaner("tests\python\example1.json")
+    cleaner.readFile()
+    cleaner.dropMissingRows()
+    cleaner.readFile()
+
+    assert cleaner.filecontent == [        
+        {'id': 1, 'name': 'Alice', 'age': 30, "score": 88}, 
+        {'id': 3, 'name': 'Charlie', 'age': 22, "score": 95}
     ]
-        
-    assert cleaner.handleNaNs(list_of_dicts) == [
-        {'name': 'Alice', 'age': "0"},
-        {'name': "0", 'age': "0"},
-        {'name': "Charlie", 'age': 35},
-        {'name': "0", 'age': "0"},
+
+def test_normalizeTextJSON():
+    cleaner = DataCleaner("tests\python\example2.json")
+    cleaner.readFile()
+    cleaner.normalizeText()
+    cleaner.readFile()
+
+    assert cleaner.filecontent == [
+        {'id': 1, "name": "alice", "age": 30, "score": 88},
+        {'id': 2, "name": "bob", "age": 25, "score": 72},
+        {'id': 3, "name": "charlie", "age": 35, "score": 95},
+        {'id': 4, "name": "diana", "age": 45, "score": 85},
+    ]
+
+
+def test_handleNaNsJSON():
+    cleaner = DataCleaner("tests\python\example3.json")
+    cleaner.readFile()
+    cleaner.handleNaNs()
+    cleaner.readFile()
+    
+
+    assert cleaner.filecontent == [
+        {'id': 1, "name": "Alice", "age": 0, "score": 88},
+        {'id': 2, "name": "Bob", "age": 25, "score": 0},
+        {'id': 3, "name": 0, "age": 22, "score": 95},
+        {'id': 4, "name": "Diana", "age": 0, "score": 0},
 
     ]
 
