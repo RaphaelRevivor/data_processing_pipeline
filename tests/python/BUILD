@@ -11,18 +11,10 @@ py_test(
     imports = ["."],
 )
 
-exports_files([
-    "example1input.csv",
-    "example1input.json",
-    "example2input.csv",
-    "example2input.json",
-    "example3input.csv",
-    "example3input.json",
+filegroup(
+    name = "testdata",
+    srcs = glob(["*.csv", "*.json"]),
+    visibility = ["//:__subpackages__"],
+)
 
-    "example1output.csv",
-    "example1output.json",
-    "example2output.csv",
-    "example2output.json",
-    "example3output.csv",
-    "example3output.json",
-])
+exports_files(glob(allow_empty = True, include = ["*.csv", "*.json"]))
