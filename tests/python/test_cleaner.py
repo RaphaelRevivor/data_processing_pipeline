@@ -1,24 +1,22 @@
 from python_tools.data_cleaner.cleaner import DataCleaner
 
 def test_dropMissingRowsCSV():
-    cleaner = DataCleaner("tests\python\example1.csv")
-    cleaner.readFile()
+    cleaner = DataCleaner(filename="tests/python/example1input.csv", output="tests/python/example1output.csv")
+    cleaner.readFile('input')
     cleaner.dropMissingRows()
-    cleaner.readFile()
+    cleaner.readFile('output')
+
 
     assert cleaner.filecontent == [        
         {'id': '1', 'name': 'Alice', 'age': '30', 'score': '88'}, 
-        {'id': '3', 'name': 'Charlie', 'age': '22', 'score': '95'}
+        {'id': '3', 'name': 'Charlie', 'age': '35', 'score': '95'}
     ]
 
-
-
-
 def test_normalizeTextCSV():
-    cleaner = DataCleaner("tests\python\example2.csv")
-    cleaner.readFile()
+    cleaner = DataCleaner(filename="tests/python/example2input.csv", output="tests/python/example2output.csv")
+    cleaner.readFile('input')
     cleaner.normalizeText()
-    cleaner.readFile()
+    cleaner.readFile('output')
 
     assert cleaner.filecontent == [
         {'id': '1', 'name': 'alice', 'age': '30', 'score': '88'},
@@ -28,10 +26,10 @@ def test_normalizeTextCSV():
     ]
 
 def test_handleNaNsCSV():
-    cleaner = DataCleaner("tests\python\example3.csv")
-    cleaner.readFile()
+    cleaner = DataCleaner(filename="tests/python/example3input.csv", output="tests/python/example3output.csv")
+    cleaner.readFile('input')
     cleaner.handleNaNs()
-    cleaner.readFile()
+    cleaner.readFile('output')
     
 
     assert cleaner.filecontent == [
@@ -45,10 +43,10 @@ def test_handleNaNsCSV():
 
 
 def test_dropMissingRowsJSON():
-    cleaner = DataCleaner("tests\python\example1.json")
-    cleaner.readFile()
+    cleaner = DataCleaner(filename="tests/python/example1input.json", output="tests/python/example1output.json")
+    cleaner.readFile('input')
     cleaner.dropMissingRows()
-    cleaner.readFile()
+    cleaner.readFile('output')
 
     assert cleaner.filecontent == [        
         {'id': 1, 'name': 'Alice', 'age': 30, "score": 88}, 
@@ -56,10 +54,10 @@ def test_dropMissingRowsJSON():
     ]
 
 def test_normalizeTextJSON():
-    cleaner = DataCleaner("tests\python\example2.json")
-    cleaner.readFile()
+    cleaner = DataCleaner(filename="tests/python/example2input.json", output="tests/python/example2output.json")
+    cleaner.readFile('input')
     cleaner.normalizeText()
-    cleaner.readFile()
+    cleaner.readFile('output')
 
     assert cleaner.filecontent == [
         {'id': 1, "name": "alice", "age": 30, "score": 88},
@@ -70,10 +68,10 @@ def test_normalizeTextJSON():
 
 
 def test_handleNaNsJSON():
-    cleaner = DataCleaner("tests\python\example3.json")
-    cleaner.readFile()
+    cleaner = DataCleaner(filename="tests/python/example3input.json", output="tests/python/example3output.json")
+    cleaner.readFile('input')
     cleaner.handleNaNs()
-    cleaner.readFile()
+    cleaner.readFile('output')
     
 
     assert cleaner.filecontent == [
