@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - dev
+      - dev_data_cleaner
   pull_request:
     types: [opened, reopened]
 jobs:
