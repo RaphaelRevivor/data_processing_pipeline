@@ -65,7 +65,7 @@ class DataCleaner:
     def overrideOutput(self, output):
         self.output = output
 
-    def handleNaNs(self): 
+    def dropMissingRows(self): 
         if self.filetype == "csv": 
             self.filecontent = [
             row for row in self.filecontent
@@ -83,9 +83,17 @@ class DataCleaner:
                 if(isinstance(row[key], str)):
                     row[key] = value.lower().replace(" ", "")
 
+    def handleNaNs(self): 
+        for row in self.filecontent:
+            for key, value in row.items():
+                if((value == None or value == '' or str(value).lower() == 'nan') and self.filetype == "csv"):
+                    row[key] = '0'
+                elif((value == None or str(value).lower() == 'nan') and self.filetype == "json"):
+                    row[key] = 0
 
     def readFileAndClean(self, filepath):   
         self.readFile(filepath)
+        self.dropMissingRows()
         self.normalizeText()
         self.handleNaNs()
         self.writeFile()
