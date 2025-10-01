@@ -5,16 +5,18 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include "map"
+#include <map>
+#include <cmath>
 
 using namespace std;
 
 class Stats {
     public: 
-        double mean(vector<vector<pair<string, string>>> data);
-        double median(vector<vector<pair<string, string>>> data);
-        vector<int> mode(vector<vector<pair<string, string>>> data);
-        double variance(vector<vector<pair<string, string>>> data);
+        double calcMean(vector<vector<pair<string, string>>> data);
+        double calcMedian(vector<vector<pair<string, string>>> data);
+        vector<int> calcMode(vector<vector<pair<string, string>>> data);
+        double calcVariance(vector<vector<pair<string, string>>> data);
+        double calcStandardDeviation(vector<vector<pair<string, string>>> data);
 };
 
 #endif

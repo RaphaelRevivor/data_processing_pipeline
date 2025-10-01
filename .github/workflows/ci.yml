@@ -4,6 +4,7 @@ on:
     branches:
       - dev
       - dev_data_cleaner
+      - dev_statistics
   pull_request:
     types: [opened, reopened]
 jobs:

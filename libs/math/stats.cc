@@ -1,27 +1,28 @@
 #include "stats.h"
 
 /**
- * Gets the scores from the data.
+ * Gets the scores from the data and converts them to integers.
  * @param data the data
  * @return if data is not empty, returns a vector of the scores, otherwise returns an empty vector
+ * @author Tilde
  */
 vector<int> getScores(vector<vector<pair<string, string>>> data) 
 {
-    if (data.empty()) 
+    if (data.empty() || data[0].empty())                        // checks if data is empty
     {
         return vector<int>{};
     }
 
-    vector<int> scores;                                         // creates a vector to fill with scores
+    vector<int> scores;
 
     for (const auto& row : data)
     {
-        string scoreString = row.back().second;                 // gets the second string of the last pair, i.e. the score
+        string scoreString = row.back().second;                 // gets the second string of the last pair in the row, i.e. the score
         int scoreInt;
 
         try {                                               
             scoreInt = stoi(scoreString);                       // tries to convert to int
-            scores.push_back(scoreInt);                         // pushes the converted score to the vector
+            scores.push_back(scoreInt);
         } catch (const invalid_argument& e) {
             cout << "Error: Not a valid number: " << scoreString << endl;
         } catch (const out_of_range& e) {
@@ -36,8 +37,9 @@ vector<int> getScores(vector<vector<pair<string, string>>> data)
  * Calculates the mean of the scores.
  * @param data the data
  * @return if data is not empty, returns the mean of the scores, otherwise -1
+ * @author Tilde
  */
-double Stats::mean(vector<vector<pair<string, string>>> data) 
+double Stats::calcMean(vector<vector<pair<string, string>>> data) 
 {
     auto scores = getScores(data);
     
@@ -47,7 +49,7 @@ double Stats::mean(vector<vector<pair<string, string>>> data)
 
     double sum = 0.0;
 
-    for (const auto& score : scores) 
+    for (const auto& score : scores)
     {
         sum += score;
     }
@@ -59,8 +61,9 @@ double Stats::mean(vector<vector<pair<string, string>>> data)
  * Calculates the median of the scores.
  * @param data the data
  * @return if data is not empty, returns the median of the scores, otherwise -1
+ * @author Tilde
  */
-double Stats::median(vector<vector<pair<string, string>>> data)
+double Stats::calcMedian(vector<vector<pair<string, string>>> data)
 {
     auto scores = getScores(data);
     
@@ -68,14 +71,14 @@ double Stats::median(vector<vector<pair<string, string>>> data)
         return -1;
     }
 
-    sort(scores.begin(), scores.end());
+    sort(scores.begin(), scores.end());                         // sorts the scores in ascending order
 
     int middleIndex = scores.size()/2;
 
-    if (scores.size() % 2 == 0) 
+    if (scores.size() % 2 == 0)                                 // checks if there is an even number of scores
     {
         double sumOfMiddleScores = scores[middleIndex-1] + scores[middleIndex];
-        return sumOfMiddleScores/2;
+        return sumOfMiddleScores/2;                             // calculates average of middle scores
     }
 
     return scores[middleIndex];
@@ -85,8 +88,9 @@ double Stats::median(vector<vector<pair<string, string>>> data)
  * Calculates the mode of the scores.
  * @param data the data
  * @return if data is not empty, returns a vector with the modes of the scores, otherwise returns an empty vector
+ * @author Tilde
  */
-vector<int> Stats::mode(vector<vector<pair<string, string>>> data)
+vector<int> Stats::calcMode(vector<vector<pair<string, string>>> data)
 {
     auto scores = getScores(data);
     
@@ -94,11 +98,11 @@ vector<int> Stats::mode(vector<vector<pair<string, string>>> data)
         return vector<int>{};
     }
 
-    map<int, int> frequencies;
+    map<int, int> frequencies;                                  // creates map with key score and value frequency
 
     for (const auto& score : scores) 
     {
-        frequencies[score] += 1;
+        frequencies[score] += 1;                                // adds 1 to the current value of the key. If the key score doesn't exist in the map, creates a key with default value 0 
     }
 
     vector<int> modes;
@@ -106,9 +110,9 @@ vector<int> Stats::mode(vector<vector<pair<string, string>>> data)
 
     for (const auto& freq : frequencies) 
     {
-        if (maxFreq < freq.second) 
+        if (maxFreq < freq.second)
         {
-            modes.clear();
+            modes.clear();                                      // clear vector of previously stored modes
             modes.push_back(freq.first);
             maxFreq = freq.second;
         } 
@@ -124,19 +128,50 @@ vector<int> Stats::mode(vector<vector<pair<string, string>>> data)
 /**
  * Calculates the variance of the scores.
  * @param data the data
- * @return if data is not empty, returns the variance of the scores, otherwise returns an empty vector
+ * @return if data is not empty, returns the variance of the scores, otherwise returns -1
+ * @author Tilde
  */
-double Stats::variance(vector<vector<pair<string, string>>> data) 
+double Stats::calcVariance(vector<vector<pair<string, string>>> data) 
 {
+    auto scores = getScores(data);
+    
+    if (scores.empty()) {
+        return -1.0;
+    }
 
+    double sum = 0.0;
+
+    for (const auto& score : scores) 
+    {
+        sum += score;
+    }
+
+    double mean = sum/scores.size();
+    sum = 0.0;
+
+    for (const auto& score : scores) 
+    {
+        double squaredDiff = (score-mean)*(score-mean);
+        sum += squaredDiff;
+    }
+
+    return sum/scores.size();
 }
 
 /**
  * Calculates the standard deviation of the scores.
  * @param data the data
- * @return if data is not empty, returns the standard deviation of the scores, otherwise returns an empty vector
+ * @return if data is not empty, returns the standard deviation of the scores, otherwise returns -1
+ * @author Tilde
  */
-double Stats::variance(vector<vector<pair<string, string>>> data) 
+double Stats::calcStandardDeviation(vector<vector<pair<string, string>>> data) 
 {
+    double variance = calcVariance(data);
 
+    if (variance == -1.0) 
+    {
+        return variance;
+    }
+
+    return sqrt(variance);
 }
