@@ -1,19 +1,19 @@
 #include "stats.h"
 
 /**
- * Gets the scores from the data and converts them to integers.
+ * Reads data and stores it.
  * @param data the data
- * @return if data is not empty, returns a vector of the scores, otherwise returns an empty vector
+ * @return true if data is read and stored correctly, otherwise false
  * @author Tilde
  */
-vector<int> getScores(vector<vector<pair<string, string>>> data) 
+bool Stats::readData(const vector<vector<pair<string, string>>>& data)
 {
+    scores.clear();
+
     if (data.empty() || data[0].empty())                        // checks if data is empty
     {
-        return vector<int>{};
+        return true;
     }
-
-    vector<int> scores;
 
     for (const auto& row : data)
     {
@@ -23,14 +23,13 @@ vector<int> getScores(vector<vector<pair<string, string>>> data)
         try {                                               
             scoreInt = stoi(scoreString);                       // tries to convert to int
             scores.push_back(scoreInt);
-        } catch (const invalid_argument& e) {
-            cout << "Error: Not a valid number: " << scoreString << endl;
-        } catch (const out_of_range& e) {
-            cout << "Error: Number out of range: " << scoreString << endl;
-        }
+        } catch (const exception& e) {
+            cerr << "Error: Score not valid: " << scoreString << endl;
+            return false;
+        } 
     }
 
-    return scores;
+    return true;
 }
 
 /**
@@ -39,20 +38,13 @@ vector<int> getScores(vector<vector<pair<string, string>>> data)
  * @return if data is not empty, returns the mean of the scores, otherwise -1
  * @author Tilde
  */
-double Stats::calcMean(vector<vector<pair<string, string>>> data) 
+double Stats::calcMean() 
 {
-    auto scores = getScores(data);
-    
     if (scores.empty()) {
         return -1;
     }
 
-    double sum = 0.0;
-
-    for (const auto& score : scores)
-    {
-        sum += score;
-    }
+    double sum = accumulate(scores.begin(), scores.end(), 0);
 
     return sum/scores.size();
 }
@@ -63,10 +55,8 @@ double Stats::calcMean(vector<vector<pair<string, string>>> data)
  * @return if data is not empty, returns the median of the scores, otherwise -1
  * @author Tilde
  */
-double Stats::calcMedian(vector<vector<pair<string, string>>> data)
+double Stats::calcMedian()
 {
-    auto scores = getScores(data);
-    
     if (scores.empty()) {
         return -1;
     }
@@ -90,10 +80,8 @@ double Stats::calcMedian(vector<vector<pair<string, string>>> data)
  * @return if data is not empty, returns a vector with the modes of the scores, otherwise returns an empty vector
  * @author Tilde
  */
-vector<int> Stats::calcMode(vector<vector<pair<string, string>>> data)
+vector<int> Stats::calcMode()
 {
-    auto scores = getScores(data);
-    
     if (scores.empty()) {
         return vector<int>{};
     }
@@ -131,20 +119,13 @@ vector<int> Stats::calcMode(vector<vector<pair<string, string>>> data)
  * @return if data is not empty, returns the variance of the scores, otherwise returns -1
  * @author Tilde
  */
-double Stats::calcVariance(vector<vector<pair<string, string>>> data) 
+double Stats::calcVariance() 
 {
-    auto scores = getScores(data);
-    
     if (scores.empty()) {
         return -1.0;
     }
 
-    double sum = 0.0;
-
-    for (const auto& score : scores) 
-    {
-        sum += score;
-    }
+    double sum = accumulate(scores.begin(), scores.end(), 0);
 
     double mean = sum/scores.size();
     sum = 0.0;
@@ -164,9 +145,9 @@ double Stats::calcVariance(vector<vector<pair<string, string>>> data)
  * @return if data is not empty, returns the standard deviation of the scores, otherwise returns -1
  * @author Tilde
  */
-double Stats::calcStandardDeviation(vector<vector<pair<string, string>>> data) 
+double Stats::calcStandardDeviation() 
 {
-    double variance = calcVariance(data);
+    double variance = calcVariance();
 
     if (variance == -1.0) 
     {

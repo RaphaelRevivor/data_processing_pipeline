@@ -7,16 +7,20 @@
 #include <algorithm>
 #include <map>
 #include <cmath>
+#include <numeric>
 
 using namespace std;
 
 class Stats {
+    private:
+        vector<int> scores;
     public: 
-        double calcMean(vector<vector<pair<string, string>>> data);
-        double calcMedian(vector<vector<pair<string, string>>> data);
-        vector<int> calcMode(vector<vector<pair<string, string>>> data);
-        double calcVariance(vector<vector<pair<string, string>>> data);
-        double calcStandardDeviation(vector<vector<pair<string, string>>> data);
+        bool readData(const vector<vector<pair<string, string>>>& data);
+        double calcMean();
+        double calcMedian();
+        vector<int> calcMode();
+        double calcVariance();
+        double calcStandardDeviation();
 };
 
 #endif

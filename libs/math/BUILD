@@ -6,7 +6,6 @@ cc_library(
   hdrs = [
     "stats.h",
   ],
-  deps = [],
   visibility = [
     "//:__subpackages__",
   ],
