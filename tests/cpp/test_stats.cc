@@ -46,71 +46,88 @@ class StatsTest : public ::testing::Test
 shared_ptr<Stats> StatsTest::statsPtr = nullptr;
 
 TEST_F(StatsTest, Mean) {
-    ASSERT_TRUE(statsPtr->readData(dataOneLine));
+    statsPtr->readData(dataOneLine);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcMean(), 88.0);
 
-    ASSERT_TRUE(statsPtr->readData(dataFull1));
+    statsPtr->readData(dataFull1);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcMean(), 84.25);
 
-    ASSERT_TRUE(statsPtr->readData(dataEmpty));
+    statsPtr->readData(dataEmpty);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcMean(), -1.0);
 }
 
 TEST_F(StatsTest, Median) {
-    ASSERT_TRUE(statsPtr->readData(dataOneLine));
+    statsPtr->readData(dataOneLine);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcMedian(), 88.0);
 
-    ASSERT_TRUE(statsPtr->readData(dataFull1));
+    statsPtr->readData(dataFull1);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcMedian(), 85.0);
 
-    ASSERT_TRUE(statsPtr->readData(dataEmpty));
+    statsPtr->readData(dataEmpty);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcMedian(), -1.0);
 }
 
 TEST_F(StatsTest, Mode) {
-    ASSERT_TRUE(statsPtr->readData(dataOneLine));
+    statsPtr->readData(dataOneLine);
+    ASSERT_TRUE(statsPtr->loadScores());
     vector<int> result = statsPtr->calcMode();
     EXPECT_EQ(result.size(), 1);
     EXPECT_EQ(result[0], 88);
 
-    ASSERT_TRUE(statsPtr->readData(dataFull1));
+    statsPtr->readData(dataFull1);
+    ASSERT_TRUE(statsPtr->loadScores());
     result = statsPtr->calcMode();
     EXPECT_EQ(result.size(), 4);
 
-    ASSERT_TRUE(statsPtr->readData(dataFull2));
+    statsPtr->readData(dataFull2);
+    ASSERT_TRUE(statsPtr->loadScores());
     result = statsPtr->calcMode();
     EXPECT_EQ(result.size(), 1);
     EXPECT_EQ(result[0], 77);
 
-    ASSERT_TRUE(statsPtr->readData(dataFull3));
+    statsPtr->readData(dataFull3);
+    ASSERT_TRUE(statsPtr->loadScores());
     result = statsPtr->calcMode();
     EXPECT_EQ(result.size(), 2);
     EXPECT_EQ(result[0], 70);
     EXPECT_EQ(result[1], 90);
 
-    ASSERT_TRUE(statsPtr->readData(dataEmpty));
+    statsPtr->readData(dataEmpty);
+    ASSERT_TRUE(statsPtr->loadScores());
     result = statsPtr->calcMode();
     ASSERT_TRUE(result.empty());
 }
 
 TEST_F(StatsTest, Variance) {
-    ASSERT_TRUE(statsPtr->readData(dataOneLine));
+    statsPtr->readData(dataOneLine);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcVariance(), 0.0);
 
-    ASSERT_TRUE(statsPtr->readData(dataFull1));
+    statsPtr->readData(dataFull1);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcVariance(), 26.1875);
 
-    ASSERT_TRUE(statsPtr->readData(dataEmpty));
+    statsPtr->readData(dataEmpty);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcVariance(), -1.0);
 }
 
 TEST_F(StatsTest, StandardDeviation) {
-    ASSERT_TRUE(statsPtr->readData(dataOneLine));
+    statsPtr->readData(dataOneLine);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcStandardDeviation(), 0.0);
 
-    ASSERT_TRUE(statsPtr->readData(dataFull3));
+    statsPtr->readData(dataFull3);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcStandardDeviation(), 10);
 
-    ASSERT_TRUE(statsPtr->readData(dataEmpty));
+    statsPtr->readData(dataEmpty);
+    ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcStandardDeviation(), -1.0);
 }

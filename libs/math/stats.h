@@ -13,9 +13,12 @@ using namespace std;
 
 class Stats {
     private:
+        vector<vector<pair<string, string>>> data;
         vector<int> scores;
+        double sumScores;
     public: 
-        bool readData(const vector<vector<pair<string, string>>>& data);
+        void readData(const vector<vector<pair<string, string>>>& data);
+        bool loadScores();
         double calcMean();
         double calcMedian();
         vector<int> calcMode();

@@ -2,13 +2,38 @@
 
 /**
  * Reads data and stores it.
- * @param data the data
- * @return true if data is read and stored correctly, otherwise false
+ * @param newData the data
  * @author Tilde
  */
-bool Stats::readData(const vector<vector<pair<string, string>>>& data)
+void Stats::readData(const vector<vector<pair<string, string>>>& newData)
+{
+    data.clear();
+
+    vector<pair<string, string>> tempRow;
+
+    if (!(newData.empty() || newData[0].empty()))               // only enters if the new data is not empty
+    {
+        for (const auto& row : newData)
+        {
+            for (const auto& pair : row) 
+            {
+                tempRow.emplace_back(make_pair(pair.first, pair.second));
+            }
+            data.push_back(tempRow);
+            tempRow.clear();
+        }
+    }
+}
+
+/**
+ * Loads the scores from the data.
+ * @return true if scores are loaded correctly, otherwise false
+ * @author Tilde
+ */
+bool Stats::loadScores()
 {
     scores.clear();
+    sumScores = 0;
 
     if (data.empty() || data[0].empty())                        // checks if data is empty
     {
@@ -29,12 +54,13 @@ bool Stats::readData(const vector<vector<pair<string, string>>>& data)
         } 
     }
 
+    sumScores = accumulate(scores.begin(), scores.end(), 0);
+
     return true;
 }
 
 /**
  * Calculates the mean of the scores.
- * @param data the data
  * @return if data is not empty, returns the mean of the scores, otherwise -1
  * @author Tilde
  */
@@ -44,14 +70,11 @@ double Stats::calcMean()
         return -1;
     }
 
-    double sum = accumulate(scores.begin(), scores.end(), 0);
-
-    return sum/scores.size();
+    return sumScores/scores.size();
 }
 
 /**
  * Calculates the median of the scores.
- * @param data the data
  * @return if data is not empty, returns the median of the scores, otherwise -1
  * @author Tilde
  */
@@ -76,7 +99,6 @@ double Stats::calcMedian()
 
 /**
  * Calculates the mode of the scores.
- * @param data the data
  * @return if data is not empty, returns a vector with the modes of the scores, otherwise returns an empty vector
  * @author Tilde
  */
@@ -115,7 +137,6 @@ vector<int> Stats::calcMode()
 
 /**
  * Calculates the variance of the scores.
- * @param data the data
  * @return if data is not empty, returns the variance of the scores, otherwise returns -1
  * @author Tilde
  */
@@ -125,23 +146,20 @@ double Stats::calcVariance()
         return -1.0;
     }
 
-    double sum = accumulate(scores.begin(), scores.end(), 0);
-
-    double mean = sum/scores.size();
-    sum = 0.0;
+    double mean = sumScores/scores.size();
+    double squaredDiffSum = 0.0;
 
     for (const auto& score : scores) 
     {
         double squaredDiff = (score-mean)*(score-mean);
-        sum += squaredDiff;
+        squaredDiffSum += squaredDiff;
     }
 
-    return sum/scores.size();
+    return squaredDiffSum/scores.size();
 }
 
 /**
  * Calculates the standard deviation of the scores.
- * @param data the data
  * @return if data is not empty, returns the standard deviation of the scores, otherwise returns -1
  * @author Tilde
  */
