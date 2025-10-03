@@ -1,4 +1,5 @@
-[{"id": 1, "name": "Alice", "age": 30, "score": 88}, 
-{"id": null, "name": null, "age": null, "score": null}, 
-{"id": 3, "name": "Charlie", "age": 22, "score": 95},
-{"id": null, "name": null, "age": null, "score": null} ]
+[
+{"id": 1,  "name": "Alice",   "age": 30,    "score": 88}, 
+{"id": 2,  "name": "Bob",     "age": null,  "score": 72}, 
+{"id": 3,  "name": "Charlie", "age": 35,    "score": 95}, 
+{"id": 4,  "name": "Diana",   "age": null,  "score": 85}]

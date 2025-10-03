@@ -5,25 +5,46 @@ import argparse
 
 from python.runfiles import runfiles
 
-class DataCleaner: 
 
+class DataCleaner: 
+    """
+    Class to read, clean and write the content of csv or json files.
+    :atribute str filename: Name of the file being processed.
+    :atribute str filetype: csv or json depending on filenames ending.
+    :atribute list filecontent: empty list representeing the content of the file being read.
+    :atribute runfiles r: Object which enables file reading in bazel environments.
+    """
     def __init__(self):
         self.filename = ""
         self.filetype = ""
         self.filecontent = []
         self.r = runfiles.Create()
 
+    """
+    :Method to detect if the read file is a csv or json file. 
+    :param str filepath: filepath which filetype should be determined
+    :return str filetype: csv or json depending on which filetype is read 
+    """
     def detect_filetype(self, filepath):
         file_ending = filepath.split(".")[1]
         if(file_ending == "csv"):
             return "csv"
         elif(file_ending == "json"):
             return "json"
+        else: 
+            raise ValueError("Unsupported filetype")
         
+    """
+    :Method to initialize the terminal arguments to call tests
+    """
     def initArgs(self):
         self.parser.add_argument("filepath", help = "Path to the input file")
         self.parser.add_argument("--read-file-only", action="store_true", help="Reading a file without cleaning the data")
 
+    """
+    Method to read content of file depending on the filetype.
+    :param str filepath: filepath to the file which should be read.
+    """
     def readFile(self, filepath): 
         workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', 'data_processing_pipeline')
 
@@ -47,6 +68,10 @@ class DataCleaner:
         else:
             raise ValueError("Unsupported file type")
 
+
+    """
+    Method to write the content of self.filecontent to a filepath.
+    """
     def writeFile(self):
         workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', 'data_processing_pipeline')
 
@@ -62,42 +87,50 @@ class DataCleaner:
             with(open(data_location, mode='w')) as file:
                 json.dump(self.filecontent, file)
     
+    """
+    Method to allow for users to override the path which the class writes to.
+    """
     def overrideOutput(self, output):
         self.output = output
 
-    def dropMissingRows(self): 
+    """
+    Method to drop a row if it contains any NaN, none or Null values.
+    """
+    def handleNaNs(self): 
         if self.filetype == "csv": 
             self.filecontent = [
-            row for row in self.filecontent
-            if not all(value is None or value == '' for value in row.values())
+                row for row in self.filecontent
+                if not any(value is None or value == '' for value in row.values())
             ]
 
         elif self.filetype == "json":   
             self.filecontent = [        
-                row for row in self.filecontent if not all(value is None or value == '' for value in row.values())
+                row for row in self.filecontent 
+                if not any(value == None for value in row.values())
             ]
 
+    """
+    Method to normalize text in a row, lower case and remove white space 
+    """
     def normalizeText(self): 
         for row in self.filecontent:
             for key, value in row.items():
                 if(isinstance(row[key], str)):
                     row[key] = value.lower().replace(" ", "")
 
-    def handleNaNs(self): 
-        for row in self.filecontent:
-            for key, value in row.items():
-                if((value == None or value == '' or str(value).lower() == 'nan') and self.filetype == "csv"):
-                    row[key] = '0'
-                elif((value == None or str(value).lower() == 'nan') and self.filetype == "json"):
-                    row[key] = 0
-
+    """
+    Method to do a complete reading and cleaning of a file.
+    :param str filepath: filepath to the file which will be cleaned.
+    """
     def readFileAndClean(self, filepath):   
         self.readFile(filepath)
-        self.dropMissingRows()
         self.normalizeText()
         self.handleNaNs()
         self.writeFile()
 
+"""
+Method which enables the pytest_test bazel macro to access the methods readFile() and readFileAndClean() through the terminal. 
+"""
 def main():
     parser = argparse.ArgumentParser(description="Clean CSV/JSON files")
     parser.add_argument("filepath", help="Path to the input file")
