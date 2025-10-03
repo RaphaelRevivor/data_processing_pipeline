@@ -106,11 +106,3 @@ def test_completeCleaningJSON():
         {'id': 4, 'name': "diana", 'age': 45, 'score': 85},
         {'id': 6, 'name': "freddy", 'age': 90, 'score': 100}
 ]
-
-
-# This is added temporarily to solve the pytest not able to run via Bazel issue,
-# see: https://stackoverflow.com/a/58345932.
-# This can further be eliminated using either a macro or rule
-if __name__ == "__main__":
-    import pytest
-    raise SystemExit(pytest.main([__file__]))
