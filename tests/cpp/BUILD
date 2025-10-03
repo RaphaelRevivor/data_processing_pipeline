@@ -25,3 +25,14 @@ cc_test(
     "example.csv",
   ],
 )
+
+cc_test(
+  name = "stats_test",
+  srcs = ["test_stats.cc"],
+  deps = [
+    "@googletest//:gtest",
+    "@googletest//:gtest_main",
+    "//libs/math:stats",
+    "@bazel_tools//tools/cpp/runfiles",
+  ],
+)
