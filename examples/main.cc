@@ -1,8 +1,9 @@
 #include "tools/cpp/runfiles/runfiles.h"
 #include "main.h"
 
-int main(char** argv)
+int main(int argc, char** argv)
 {
+  (void)argc;
   // following is needed to use bazel runfiles
   string err;
   auto runfiles = bazel::tools::cpp::runfiles::Runfiles::Create(argv[0], &err);
