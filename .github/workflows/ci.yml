@@ -3,10 +3,10 @@ on:
   push:
     branches:
       - dev
-      - dev_data_cleaner
-      - dev_statistics
+      - dev_**
+  # trigger when PR opens, reopens, has new commit(s), and becomes ready_for_review
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize, ready_for_review]
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -21,5 +21,5 @@ jobs:
           repository-cache: true
       - name: build and run example
         run: bazel run examples:example
-      - name: build and run google tests
+      - name: build and run google tests and pytests
         run: bazel test tests/...

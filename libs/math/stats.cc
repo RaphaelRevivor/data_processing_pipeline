@@ -49,7 +49,7 @@ bool Stats::loadScores()
             scoreInt = stoi(scoreString);                       // tries to convert to int
             scores.push_back(scoreInt);
         } catch (const exception& e) {
-            cerr << "Error: Score not valid: " << scoreString << endl;
+            cerr << "Error: " << e.what() << ". Score not valid: " << scoreString << endl;
             return false;
         } 
     }
@@ -86,7 +86,7 @@ double Stats::calcMedian()
 
     sort(scores.begin(), scores.end());                         // sorts the scores in ascending order
 
-    int middleIndex = scores.size()/2;
+    int middleIndex = static_cast<int>(scores.size())/2;
 
     if (scores.size() % 2 == 0)                                 // checks if there is an even number of scores
     {
