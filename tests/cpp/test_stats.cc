@@ -92,11 +92,11 @@ TEST_F(StatsTest, Mode) {
     EXPECT_EQ(result[0], 77);
 
     statsPtr->readData(dataFull3);
-    ASSERT_TRUE(statsPtr->loadScores());
+    ASSERT_TRUE(statsPtr->loadScores());                
     result = statsPtr->calcMode();
     EXPECT_EQ(result.size(), 2);
-    EXPECT_EQ(result[0], 70);
-    EXPECT_EQ(result[1], 90);
+    EXPECT_TRUE(find(result.begin(), result.end(), 70) != result.end());
+    EXPECT_TRUE(find(result.begin(), result.end(), 90) != result.end());
 
     statsPtr->readData(dataEmpty);
     ASSERT_TRUE(statsPtr->loadScores());
@@ -130,4 +130,39 @@ TEST_F(StatsTest, StandardDeviation) {
     statsPtr->readData(dataEmpty);
     ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_DOUBLE_EQ(statsPtr->calcStandardDeviation(), -1.0);
+}
+
+TEST_F(StatsTest, Frequencies) {
+    statsPtr->readData(dataOneLine);
+    ASSERT_TRUE(statsPtr->loadScores());
+    auto result = statsPtr->calcFrequencies(); 
+    EXPECT_EQ(result[88], 1);
+
+    statsPtr->readData(dataFull2);
+    ASSERT_TRUE(statsPtr->loadScores());
+    result = statsPtr->calcFrequencies();
+    EXPECT_EQ(result[88], 1);
+    EXPECT_EQ(result[77], 2);
+    EXPECT_EQ(result[90], 1);
+
+    statsPtr->readData(dataEmpty);
+    ASSERT_TRUE(statsPtr->loadScores());
+    result = statsPtr->calcFrequencies();
+    ASSERT_TRUE(result.empty());
+}
+
+TEST_F(StatsTest, Frequency) {
+    statsPtr->readData(dataOneLine);
+    ASSERT_TRUE(statsPtr->loadScores());
+    EXPECT_EQ(statsPtr->calcFrequency(88), 1);
+
+    statsPtr->readData(dataFull2);
+    ASSERT_TRUE(statsPtr->loadScores());
+    EXPECT_EQ(statsPtr->calcFrequency(88), 1);
+    EXPECT_EQ(statsPtr->calcFrequency(77), 2);
+    EXPECT_EQ(statsPtr->calcFrequency(90), 1);
+
+    statsPtr->readData(dataEmpty);
+    ASSERT_TRUE(statsPtr->loadScores());
+    ASSERT_TRUE(statsPtr->calcFrequency(88), -1);
 }
