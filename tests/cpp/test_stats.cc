@@ -164,5 +164,5 @@ TEST_F(StatsTest, Frequency) {
 
     statsPtr->readData(dataEmpty);
     ASSERT_TRUE(statsPtr->loadScores());
-    ASSERT_TRUE(statsPtr->calcFrequency(88), -1);
+    EXPECT_EQ(statsPtr->calcFrequency(88), -1);
 }
