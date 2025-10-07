@@ -49,7 +49,7 @@ bool Stats::loadScores()
             scoreInt = stoi(scoreString);                       // tries to convert to int
             scores.push_back(scoreInt);
         } catch (const exception& e) {
-            cerr << "Error: Score not valid: " << scoreString << endl;
+            cerr << "Error: " << e.what() << ". Score not valid: " << scoreString << endl;
             return false;
         } 
     }
@@ -86,7 +86,7 @@ double Stats::calcMedian()
 
     sort(scores.begin(), scores.end());                         // sorts the scores in ascending order
 
-    int middleIndex = scores.size()/2;
+    int middleIndex = static_cast<int>(scores.size())/2;
 
     if (scores.size() % 2 == 0)                                 // checks if there is an even number of scores
     {
@@ -108,17 +108,12 @@ vector<int> Stats::calcMode()
         return vector<int>{};
     }
 
-    map<int, int> frequencies;                                  // creates map with key score and value frequency
-
-    for (const auto& score : scores) 
-    {
-        frequencies[score] += 1;                                // adds 1 to the current value of the key. If the key score doesn't exist in the map, creates a key with default value 0 
-    }
+    auto freqScores = calcFrequencies();
 
     vector<int> modes;
     int maxFreq = 0;
 
-    for (const auto& freq : frequencies) 
+    for (const auto& freq : freqScores) 
     {
         if (maxFreq < freq.second)
         {
@@ -173,4 +168,46 @@ double Stats::calcStandardDeviation()
     }
 
     return sqrt(variance);
+}
+
+/**
+ * Calculates the frequency of each score.
+ * @return if data is not empty, returns an unordered map of the frequency of the scores, otherwise returns an empty unordered_map
+ * @author Tilde
+ */
+unordered_map<int, int> Stats::calcFrequencies() 
+{
+    unordered_map<int, int> freqScores;
+
+    for (const auto& score : scores) 
+    {
+        freqScores[score] += 1;                                 // adds 1 to the current value of the key. If the key score doesn't exist in the map, creates a key with default value 0 
+    }
+
+    return freqScores;
+}
+
+/**
+ * Calculates the frequency of one score.
+ * @param value the score
+ * @return if data is not empty, returns the frequency of the score, otherwise returns -1
+ * @author Tilde
+ */
+int Stats::calcFrequency(int value)
+{
+    if (scores.empty()) {
+        return -1;
+    }
+
+    int freq = 0;
+
+    for (const auto& score : scores) 
+    {
+        if (value == score)
+        {
+            freq++;
+        }
+    }
+
+    return freq;
 }
