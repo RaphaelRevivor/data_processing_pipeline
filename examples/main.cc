@@ -1,7 +1,7 @@
 #include "tools/cpp/runfiles/runfiles.h"
 #include "main.h"
 
-int main(int argc, char** argv)
+int main(char** argv)
 {
   // following is needed to use bazel runfiles
   string err;

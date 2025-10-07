@@ -1,12 +1,19 @@
 name: build and test
 on:
+  # this shouldn't happen anyways
   push:
     branches:
-      - dev
-      - dev_**
+      - main
   # trigger when PR opens, reopens, has new commit(s), and becomes ready_for_review
+  # no triggers for normal dev branches now
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
+
+# only one CI run per branch (or PR) should be active at a time
+concurrency:
+  group: ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
