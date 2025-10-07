@@ -30,3 +30,8 @@ jobs:
         run: bazel run examples:example
       - name: build and run google tests and pytests
         run: bazel test tests/...
+      - name: upload test logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: bazel-testlogs/tests/**/test.log
