@@ -29,6 +29,8 @@ void CsvParser::parse(const string& filename)
         stringstream ss(line);
         string header;
         while(getline(ss, header, ',')){
+            header.erase(remove(header.begin(), header.end(), '\r'), header.end());
+            header.erase(remove(header.begin(), header.end(), ' '), header.end());
             headers.push_back(header);
         }
     }
@@ -43,6 +45,9 @@ void CsvParser::parse(const string& filename)
 
         while(getline(ss, value, ',')){
             if(col < headers.size()){
+                value.erase(remove(value.begin(), value.end(), '\r'), value.end());
+                value.erase(remove(value.begin(), value.end(), ' '), value.end());
+
                 row[headers[col]] = value;
             }
             col++;

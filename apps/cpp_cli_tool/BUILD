@@ -9,6 +9,7 @@ cc_binary(
 
   data = [
     "//tests/python:example1.json",
+    "//tests/python:example1.csv",
     ],
 )
 

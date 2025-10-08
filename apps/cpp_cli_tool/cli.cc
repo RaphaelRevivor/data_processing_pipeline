@@ -27,12 +27,6 @@ int main(int argc, char* argv[]){
         std::cout << "Usage: mytool <filepath>" << std::endl;
         return 1;
     }
-
-    std::cout << "argc = " << argc << std::endl;
-
-    for (int i = 0; i < argc; ++i)
-    std::cout << "argv[" << i << "] = " << argv[i] << std::endl;
-
     std::string filename = argv[1];
     std::string filetype = filename.substr(filename.find_last_of(".") + 1);
 
@@ -53,18 +47,41 @@ int main(int argc, char* argv[]){
 
     stats.readData(parserPtr->getEntries()); // Should pass in correct datatype 
     stats.loadScores();
-
-
-    std::cout << std::setfill('=') << std::setw(50) << '\n';
-    std::cout << std::setfill(' ') << "Mean: " << stats.calcMean() << std::setw(13);
+    std::cout << "\n\n\n";
+    
+    std::cout << std::setfill('=') << std::setw(25 + strlen("SCORES-STATISTICS")) << "SCORES-STATISTICS" << std::setw(25) << '\n';
+    std::cout << std::setfill(' ') << "Mean: " << stats.calcMean() << std::setw(strlen("Median: ") + 2);
     std::cout << "Median: " << stats.calcMedian();
 
-    if(stats.calcMode().size() == parserPtr->getEntryById("score").size()){
-        std::cout << "No identifiably mode";     
-    }else{
-        std::cout << std::setw(10) << "Mode: " << stats.calcMode()[0];
-        //std::cout << "Size of mode " << stats.calcMode().size() << " Size of scores " << stats.scores.size();
-    }
+    auto data = parserPtr->getEntries();
+    std::vector<int> scores {};
 
+    for (size_t i = 0; i < data.size(); i++)
+    {
+        auto entry = parserPtr->getEntryById(std::to_string(i+1));
+        for (auto &&[k, v]: entry)
+        {
+            if(k == "score"){
+                scores.push_back(std::stoi(v));
+                break;
+            }
+        }
+    }
+    
+    if(stats.calcMode().size() == scores.size()){
+        std::cout << std::setw(strlen("No identifiable mode") + 2) << "No identifiable mode";     
+    }else{
+        std::cout << std::setw(strlen("Mode: ") + 2) << "Mode: " << stats.calcMode()[0];
+    }
+    std::cout << std::endl;
+
+    std::cout << "Frequencies of scores: " << "\n";
+    for (auto &&[k,v] : stats.calcFrequencies())
+    {
+        std::cout << k << " appeared " << v << " time(s) ";
+    }
+    std::cout << std::endl;
+    
+    
     return 0;
 }
