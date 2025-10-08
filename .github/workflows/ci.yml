@@ -26,7 +26,14 @@ jobs:
           bazelisk-cache: true
           disk-cache: ${{ github.workflow }}
           repository-cache: true
+      - name: compile pip requirements
+        run: bazel run requirements.update
       - name: build and run example
         run: bazel run examples:example
       - name: build and run google tests and pytests
-        run: bazel test tests/...
+        run: bazel test tests/... --test_output=all
+      - name: upload test logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: bazel-testlogs/tests/**/test.log
