@@ -5,7 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 #include <cmath>
 #include <numeric>
 
@@ -24,6 +24,8 @@ class Stats {
         vector<int> calcMode();
         double calcVariance();
         double calcStandardDeviation();
+        unordered_map<int, int> calcFrequencies();
+        int calcFrequency(int);
 };
 
 #endif

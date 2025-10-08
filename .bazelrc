@@ -1,2 +1,9 @@
-build:msvc --cxxopt=/std:c++17
-build:msvc --host_cxxopt=/std:c++17
+# with this no --config flag is needed
+build --enable_platform_specific_config
+# for windows only: set c++ version, higher warning levels, treat all warnings as errors
+build:windows --cxxopt="/std:c++17"
+build:windows --cxxopt="/W4"
+build:windows --cxxopt="/WX"
+# for other builds
+build:linux --cxxopt="-Wall" --cxxopt="-Wextra" --cxxopt="-Werror"
+build:macos --cxxopt="-Wall" --cxxopt="-Wextra" --cxxopt="-Werror"
