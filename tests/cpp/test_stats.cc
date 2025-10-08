@@ -1,4 +1,5 @@
 #include "libs/math/stats.h"
+#include "tools/cpp/runfiles/runfiles.h"
 #include <gtest/gtest.h>
 
 using namespace std;
@@ -165,4 +166,10 @@ TEST_F(StatsTest, Frequency) {
     statsPtr->readData(dataEmpty);
     ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_EQ(statsPtr->calcFrequency(88), -1);
+}
+
+TEST_F(StatsTest, File) {
+    statsPtr->readData(dataFull1);
+    ASSERT_TRUE(statsPtr->loadScores());
+    ASSERT_TRUE(statsPtr->generateStatsFile());
 }
