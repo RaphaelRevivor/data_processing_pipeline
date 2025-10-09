@@ -233,26 +233,7 @@ bool Stats::generateStatsFile()
 
     jsonObj["frequencies"] = stringFreqs;
 
-    filesystem::create_directories("output");
-
-    ofstream file("output/stats.json");
-
-    if (!file.is_open())
-    {
-        cerr << "Error: Could not open file" << endl;
-        return false;
-    }
-
-    try {
-        file << setw(4) << jsonObj << endl;
-    } 
-    catch (const exception& e)
-    {
-        cerr << "Error: " << e.what() << ". Could not generate file" << endl;
-        return false;
-    }
-
-    cout << filesystem::current_path() << endl;
+    cout << setw(4) << jsonObj << endl;
 
     return true;
 }
