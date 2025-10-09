@@ -51,7 +51,8 @@ int main(int argc, char* argv[]){
     
     std::cout << std::setfill('=') << std::setw(25 + strlen("SCORES-STATISTICS")) << "SCORES-STATISTICS" << std::setw(25) << '\n';
     std::cout << std::setfill(' ') << "Mean: " << stats.calcMean() << std::setw(strlen("Median: ") + 2);
-    std::cout << "Median: " << stats.calcMedian();
+    std::cout << "Median: " << stats.calcMedian() << std::setw(strlen("Variance: " + 2)) << " Variance: " << stats.calcVariance();
+    std::cout << std::setw(strlen("Standard deviation: ") + 2) << " Standard deviation: " << stats.calcStandardDeviation();
 
     auto data = parserPtr->getEntries();
     std::vector<int> scores {};
@@ -73,15 +74,15 @@ int main(int argc, char* argv[]){
     }else{
         std::cout << std::setw(strlen("Mode: ") + 2) << "Mode: " << stats.calcMode()[0];
     }
-    std::cout << std::endl;
+    std::cout << "\n" << std::endl;
 
-    std::cout << "Frequencies of scores: " << "\n";
+    std::cout << std::setfill('=') << std::setw(25 + strlen("FREQUENCIES-OF-SCORES")) << "FREQUENCIES-OF-SCORES" << std::setw(25) << "\n";
     for (auto &&[k,v] : stats.calcFrequencies())
     {
         std::cout << k << " appeared " << v << " time(s) ";
     }
     std::cout << std::endl;
-    
+    std::cout << "\n\n";
     
     return 0;
 }
