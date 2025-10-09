@@ -62,4 +62,5 @@ cc_library(
     ":json_parser",
     ":csv_parser",
   ],
+  visibility = ["//:__subpackages__"],
 )
