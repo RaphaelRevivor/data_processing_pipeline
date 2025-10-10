@@ -24,7 +24,6 @@ int main(int argc, char* argv[])
     // this is not really hard-coded as the relative dir structure won't change
     auto loc = string("libs/math") + argv[1];
     auto filePath = runfiles->Rlocation(loc.c_str());
-    cout << loc << endl;
     
     int totalSize = filePath.size();
     int suffixSize = 4;
