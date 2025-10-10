@@ -174,21 +174,19 @@ TEST_F(StatsTest, File) {
     statsPtr->readData(dataFull3);
     ASSERT_TRUE(statsPtr->loadScores());
     
-    // Redirect cout to a stringstream
-    stringstream buffer;
+    stringstream buffer;                                        // redirect cout to a stringstream
     streambuf* oldCout = cout.rdbuf(buffer.rdbuf());
 
-    ASSERT_TRUE(statsPtr->generateStatsFile());
+    ASSERT_TRUE(statsPtr->generateStatsFile());                 // write JSON to stringstream buffer
 
-    // Restore cout
-    cout.rdbuf(oldCout);
+    cout.rdbuf(oldCout);                                        // restore cout
 
-    // Parse JSON from buffer
-    auto jsonObj = json::parse(buffer.str());
+    auto jsonObj = json::parse(buffer.str());                   // parse JSON from buffer
 
     EXPECT_DOUBLE_EQ(jsonObj["mean"], 80);
     EXPECT_DOUBLE_EQ(jsonObj["median"], 80);
-    // EXPECT_EQ(jsonObj["mode"], vector);                  TODO: add check of mode
+    auto result = jsonObj["mode"];
+    EXPECT_TRUE(find(result.begin(), result.end(), 70) != result.end());
     EXPECT_DOUBLE_EQ(jsonObj["variance"], 100);
     EXPECT_DOUBLE_EQ(jsonObj["SD"], 10);
     EXPECT_EQ(jsonObj["frequencies"]["70"], 2);
