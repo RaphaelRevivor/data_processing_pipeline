@@ -14,3 +14,8 @@ cc_binary(
     "example.json",
   ]
 )
+
+exports_files([
+    "example.csv",
+    "example.json",
+])

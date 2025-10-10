@@ -1,7 +1,10 @@
 #include "libs/math/stats.h"
 #include <gtest/gtest.h>
+#include <sstream>
+#include <nlohmann/json.hpp>
 
 using namespace std;
+using json = nlohmann::json;
 
 class StatsTest : public ::testing::Test
 {
@@ -165,4 +168,26 @@ TEST_F(StatsTest, Frequency) {
     statsPtr->readData(dataEmpty);
     ASSERT_TRUE(statsPtr->loadScores());
     EXPECT_EQ(statsPtr->calcFrequency(88), -1);
+}
+
+TEST_F(StatsTest, File) {
+    statsPtr->readData(dataFull3);
+    ASSERT_TRUE(statsPtr->loadScores());
+    
+    stringstream buffer;                                        // redirect cout to a stringstream
+    streambuf* oldCout = cout.rdbuf(buffer.rdbuf());
+
+    ASSERT_TRUE(statsPtr->generateStatsFile());                 // write JSON to stringstream buffer
+
+    cout.rdbuf(oldCout);                                        // restore cout
+
+    auto jsonObj = json::parse(buffer.str());                   // parse JSON from buffer
+
+    EXPECT_DOUBLE_EQ(jsonObj["mean"], 80);
+    EXPECT_DOUBLE_EQ(jsonObj["median"], 80);
+    auto result = jsonObj["mode"];
+    EXPECT_TRUE(find(result.begin(), result.end(), 70) != result.end());
+    EXPECT_DOUBLE_EQ(jsonObj["variance"], 100);
+    EXPECT_DOUBLE_EQ(jsonObj["SD"], 10);
+    EXPECT_EQ(jsonObj["frequencies"]["70"], 2);
 }
