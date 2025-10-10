@@ -1,3 +1,5 @@
+load('//libs/math:defs.bzl', 'gen_stats')
+
 cc_library(
   name = "stats",
   srcs = [
@@ -23,14 +25,16 @@ cc_binary(
         "@bazel_tools//tools/cpp/runfiles",
     ],
     data = [
-    "//examples:example.csv",
-    "//examples:example.json",
+      "example.csv",
     ],
 )
 
-genrule(
-    name = "generate_stats_file",
-    srcs = [":generate_stats"],
-    outs = ["stats.json"],
-    cmd = "$(location :generate_stats) > $@",
+# usage: bazel run generate_stats_file -- example.csv
+gen_stats(
+  name = "generate_stats_file",
+  # take the cc_binary as exec tool
+  tool = ":generate_stats",
+  data = [
+    "example.csv",
+  ],
 )
