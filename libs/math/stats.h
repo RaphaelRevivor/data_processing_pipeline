@@ -29,7 +29,7 @@ class Stats {
         double calcStandardDeviation();
         unordered_map<int, int> calcFrequencies();
         int calcFrequency(const int& value);
-        bool generateStatsFile();
+        bool generateStatsFile(json& jsonObj);
 };
 
 #endif

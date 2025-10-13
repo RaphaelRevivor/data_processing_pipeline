@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "stats.h"
 #include "parser_factory.h"
 #include "tools/cpp/runfiles/runfiles.h"
@@ -11,19 +13,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    string error;
-    unique_ptr<bazel::tools::cpp::runfiles::Runfiles> runfiles(
-        bazel::tools::cpp::runfiles::Runfiles::Create(argv[0], &error)
-    );
-
-    if (!runfiles) {
-        cerr << "Failed to create Runfiles object: " << error << endl;
-        return 1;
-    }
-
-    // this is not really hard-coded as the relative dir structure won't change
-    auto loc = string("libs/math") + argv[1];
-    auto filePath = runfiles->Rlocation(loc.c_str());
+    string filePath = argv[1];
     
     int totalSize = filePath.size();
     int suffixSize = 4;
@@ -57,9 +47,17 @@ int main(int argc, char* argv[])
     stats.readData(data);
     stats.loadScores();
 
-    if (!stats.generateStatsFile()) {
+    json jsonObj;
+
+    if (!stats.generateStatsFile(jsonObj)) {
         cerr << "Failed to generate stats.json" << endl;
         return 1;
+    }
+    else
+    {
+        string outFilePath = argv[2];
+        ofstream output(outFilePath);
+        output << jsonObj.dump();
     }
 
     return 0;

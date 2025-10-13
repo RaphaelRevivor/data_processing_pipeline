@@ -213,10 +213,8 @@ int Stats::calcFrequency(const int& value)
     return freq;
 }
 
-bool Stats::generateStatsFile()
+bool Stats::generateStatsFile(json& jsonObj)
 {
-    json jsonObj;
-
     jsonObj["mean"] = calcMean();
     jsonObj["median"] = calcMedian();
     jsonObj["mode"] = calcMode();

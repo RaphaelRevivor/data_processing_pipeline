@@ -29,7 +29,7 @@ cc_binary(
     ],
 )
 
-# usage: bazel run generate_stats_file -- example.csv
+# usage: bazel build generate_stats_file
 gen_stats(
   name = "generate_stats_file",
   # take the cc_binary as exec tool
@@ -37,4 +37,7 @@ gen_stats(
   data = [
     "example.csv",
   ],
+  visibility = [
+    "//:__subpackages__",
+  ]
 )

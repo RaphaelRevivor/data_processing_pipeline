@@ -177,7 +177,8 @@ TEST_F(StatsTest, File) {
     stringstream buffer;                                        // redirect cout to a stringstream
     streambuf* oldCout = cout.rdbuf(buffer.rdbuf());
 
-    ASSERT_TRUE(statsPtr->generateStatsFile());                 // write JSON to stringstream buffer
+    json output;
+    ASSERT_TRUE(statsPtr->generateStatsFile(output));                 // write JSON to stringstream buffer
 
     cout.rdbuf(oldCout);                                        // restore cout
 
