@@ -6,10 +6,9 @@ cc_binary(
     "//libs/math:stats",
     "@bazel_tools//tools/cpp/runfiles",
   ],
+  visibility  = ["//scripts:__subpackages__"],
 
-  data = [
-    "//tests/python:example1.json",
-    "//tests/python:example1.csv",
-    ],
+  data = ["//tests/python:testdata"],
+
 )
 

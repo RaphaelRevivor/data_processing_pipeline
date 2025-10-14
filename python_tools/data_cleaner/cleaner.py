@@ -9,14 +9,15 @@ from python.runfiles import runfiles
 class DataCleaner: 
     """
     Class to read, clean and write the content of csv or json files.
-    :atribute str filename: Name of the file being processed.
-    :atribute str filetype: csv or json depending on filenames ending.
-    :atribute list filecontent: empty list representeing the content of the file being read.
-    :atribute runfiles r: Object which enables file reading in bazel environments.
+    :attribute str filename: Name of the file being processed.
+    :attribute str filetype: csv or json depending on filenames ending.
+    :attribute list filecontent: empty list representeing the content of the file being read.
+    :attribute runfiles r: Object which enables file reading in bazel environments.
     """
-    def __init__(self):
+    def __init__(self, output_dir=None):
         self.filename = ""
         self.filetype = ""
+        self.output_dir = output_dir
         self.filecontent = []
         self.r = runfiles.Create()
 
@@ -46,13 +47,17 @@ class DataCleaner:
     :param str filepath: filepath to the file which should be read.
     """
     def readFile(self, filepath): 
-        workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', 'data_processing_pipeline')
 
-        data_location = self.r.Rlocation(f"{workspace}/{filepath}")
+        workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', 'data_processing_pipeline')
+        #workspace_root = os.environ.get('BUILD_WORKSPACE_DIRECTORY', "data_processing_pipeline")
+        #filepath = os.path.join(workspace_root, filepath)
+
+        data_location = self.r.Rlocation(filepath)
 
         self.filetype = self.detect_filetype(filepath) 
+        
         self.output = filepath.split(".")
-        self.output = f"{self.output[0]}_cleaned.{self.output[1]}" 
+        self.output = f"{os.path.splitext(filepath)[0]}_cleaned{os.path.splitext(filepath)[1]}" #<filepath>_cleaned<csv/json>
 
         self.filecontent.clear()
 
@@ -75,16 +80,28 @@ class DataCleaner:
     def writeFile(self):
         workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', 'data_processing_pipeline')
 
-        data_location = self.r.Rlocation(f"{workspace}/{self.output}")
+        #Check if the current output path exists, if not create the directories
+
+        basename, ext = os.path.splitext(os.path.basename(self.filename))
+        cleaned_filename = f"{basename}_cleaned.{self.filetype}"
+
+        if self.output_dir: #If outputdir is provided
+            output_dir = os.path.join(workspace, self.output_dir)
+        else:
+            input_dir = os.path.dirname(self.filename)
+            output_dir = os.path.join(workspace, input_dir)
+        
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join(output_dir, cleaned_filename)
 
         if(self.filetype == "csv"):
-            with(open(data_location, mode='w')) as file:
+            with(open(output_path, mode='w')) as file:
                 csv_writer = csv.DictWriter(file, fieldnames=self.filecontent[0].keys())
                 csv_writer.writeheader()
                 csv_writer.writerows(self.filecontent)
 
         elif(self.filetype == "json"):
-            with(open(data_location, mode='w')) as file:
+            with(open(output_path, mode='w')) as file:
                 json.dump(self.filecontent, file)
     
     """
@@ -135,6 +152,7 @@ def main():
     parser = argparse.ArgumentParser(description="Clean CSV/JSON files")
     parser.add_argument("filepath", help="Path to the input file")
     parser.add_argument("--read-file-only", action="store_true", help="Only read the file and not clean")
+    parser.add_argument("--output-dir", default=None, help="Optional directory to write cleaned ouput files to (default: same directory as input)")
     args = parser.parse_args()
     cleaner = DataCleaner()
 
@@ -142,6 +160,9 @@ def main():
         cleaner.readFile(filepath=args.filepath)
     else:
         cleaner.readFileAndClean(filepath=args.filepath)
+    
+    return parser.parse_args()
 
 if __name__ == '__main__':
-    main()
+    args = main()
+    #cleaner = DataCleaner(args.filepath, output_dir=args.output_dir)

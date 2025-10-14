@@ -30,12 +30,15 @@ int main(int argc, char* argv[]){
     std::string filename = argv[1];
     std::string filetype = filename.substr(filename.find_last_of(".") + 1);
 
-
-
     std::string err;
-    std::unique_ptr<bazel::tools::cpp::runfiles::Runfiles> runfiles(bazel::tools::cpp::runfiles::Runfiles::Create(argv[0], &err));
+    auto runfiles(bazel::tools::cpp::runfiles::Runfiles::Create(argv[0], &err));
+    if (runfiles == nullptr) {
+        std::cerr << "Error initializing runfiles: " << err << std::endl;
+        return 1;
+    }
+    
+    std::string filepath = runfiles->Rlocation(filename); //<-- Will cause a seg fault if runfiles==nullptr :(
 
-    std::string filepath = runfiles->Rlocation(filename);
 
     //Create parser w. parserfactory
     static shared_ptr<Parser> parserPtr;
@@ -84,5 +87,7 @@ int main(int argc, char* argv[]){
     std::cout << std::endl;
     std::cout << "\n\n";
     
+    
+
     return 0;
 }
