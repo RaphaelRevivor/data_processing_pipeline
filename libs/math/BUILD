@@ -24,9 +24,6 @@ cc_binary(
         "//libs/parser:parser_factory",
         "@bazel_tools//tools/cpp/runfiles",
     ],
-    data = [
-      "example.csv",
-    ],
 )
 
 # usage: bazel build //libs/math:generate_stats_file
@@ -35,7 +32,7 @@ gen_stats(
   # take the cc_binary as exec tool
   tool = ":generate_stats",
   data = [
-    "example.csv",
+    "//examples:example.json",
   ],
   visibility = [
     "//:__subpackages__",
