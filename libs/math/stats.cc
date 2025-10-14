@@ -213,7 +213,7 @@ int Stats::calcFrequency(const int& value)
     return freq;
 }
 
-bool Stats::generateStatsFile(json& jsonObj)
+void Stats::fillJSONObject(json& jsonObj)
 {
     jsonObj["mean"] = calcMean();
     jsonObj["median"] = calcMedian();
@@ -230,8 +230,4 @@ bool Stats::generateStatsFile(json& jsonObj)
     }
 
     jsonObj["frequencies"] = stringFreqs;
-
-    cout << setw(4) << jsonObj << endl;
-
-    return true;
 }

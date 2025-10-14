@@ -46,19 +46,11 @@ int main(int argc, char* argv[])
     Stats stats;
     stats.readData(data);
     stats.loadScores();
-
     json jsonObj;
-
-    if (!stats.generateStatsFile(jsonObj)) {
-        cerr << "Failed to generate stats.json" << endl;
-        return 1;
-    }
-    else
-    {
-        string outFilePath = argv[2];
-        ofstream output(outFilePath);
-        output << jsonObj.dump();
-    }
+    stats.fillJSONObject(jsonObj);
+    string outFilePath = argv[2];
+    ofstream output(outFilePath);
+    output << jsonObj.dump();
 
     return 0;
 }

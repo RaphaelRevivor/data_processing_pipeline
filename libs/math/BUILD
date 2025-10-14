@@ -29,7 +29,7 @@ cc_binary(
     ],
 )
 
-# usage: bazel build generate_stats_file
+# usage: bazel build //libs/math:generate_stats_file
 gen_stats(
   name = "generate_stats_file",
   # take the cc_binary as exec tool

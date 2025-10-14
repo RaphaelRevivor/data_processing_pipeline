@@ -170,19 +170,12 @@ TEST_F(StatsTest, Frequency) {
     EXPECT_EQ(statsPtr->calcFrequency(88), -1);
 }
 
-TEST_F(StatsTest, File) {
+TEST_F(StatsTest, JSON) {
     statsPtr->readData(dataFull3);
     ASSERT_TRUE(statsPtr->loadScores());
-    
-    stringstream buffer;                                        // redirect cout to a stringstream
-    streambuf* oldCout = cout.rdbuf(buffer.rdbuf());
 
-    json output;
-    ASSERT_TRUE(statsPtr->generateStatsFile(output));                 // write JSON to stringstream buffer
-
-    cout.rdbuf(oldCout);                                        // restore cout
-
-    auto jsonObj = json::parse(buffer.str());                   // parse JSON from buffer
+    json jsonObj;
+    statsPtr->fillJSONObject(jsonObj);
 
     EXPECT_DOUBLE_EQ(jsonObj["mean"], 80);
     EXPECT_DOUBLE_EQ(jsonObj["median"], 80);
@@ -191,4 +184,8 @@ TEST_F(StatsTest, File) {
     EXPECT_DOUBLE_EQ(jsonObj["variance"], 100);
     EXPECT_DOUBLE_EQ(jsonObj["SD"], 10);
     EXPECT_EQ(jsonObj["frequencies"]["70"], 2);
+}
+
+TEST_F(StatsTest, File) {
+    
 }
