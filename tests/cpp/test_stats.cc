@@ -185,7 +185,3 @@ TEST_F(StatsTest, JSON) {
     EXPECT_DOUBLE_EQ(jsonObj["SD"], 10);
     EXPECT_EQ(jsonObj["frequencies"]["70"], 2);
 }
-
-TEST_F(StatsTest, File) {
-    
-}
