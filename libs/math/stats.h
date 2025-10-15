@@ -3,13 +3,16 @@
 
 #include <string>
 #include <vector>
-#include <iostream>
 #include <algorithm>
 #include <unordered_map>
 #include <cmath>
 #include <numeric>
+#include <iostream>
+#include <fstream>
+#include <nlohmann/json.hpp>
 
 using namespace std;
+using json = nlohmann::json;
 
 class Stats {
     private:
@@ -25,7 +28,8 @@ class Stats {
         double calcVariance();
         double calcStandardDeviation();
         unordered_map<int, int> calcFrequencies();
-        int calcFrequency(int);
+        int calcFrequency(const int& value);
+        void fillJSONObject(json& jsonObj);
 };
 
 #endif

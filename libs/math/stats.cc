@@ -28,6 +28,7 @@ void Stats::readData(const vector<vector<pair<string, string>>>& newData)
 /**
  * Loads the scores from the data.
  * @return true if scores are loaded correctly, otherwise false
+ * @note this function must be called after new data has been read in order to use the score functions
  * @author Tilde
  */
 bool Stats::loadScores()
@@ -193,7 +194,7 @@ unordered_map<int, int> Stats::calcFrequencies()
  * @return if data is not empty, returns the frequency of the score, otherwise returns -1
  * @author Tilde
  */
-int Stats::calcFrequency(int value)
+int Stats::calcFrequency(const int& value)
 {
     if (scores.empty()) {
         return -1;
@@ -210,4 +211,23 @@ int Stats::calcFrequency(int value)
     }
 
     return freq;
+}
+
+void Stats::fillJSONObject(json& jsonObj)
+{
+    jsonObj["mean"] = calcMean();
+    jsonObj["median"] = calcMedian();
+    jsonObj["mode"] = calcMode();
+    jsonObj["variance"] = calcVariance();
+    jsonObj["SD"] = calcStandardDeviation();
+
+    auto intFreqs = calcFrequencies();
+    unordered_map<string, int> stringFreqs;
+
+    for (const auto& freq : intFreqs)
+    {
+        stringFreqs[to_string(freq.first)] = freq.second;       // translate all int keys into string keys and add to new map
+    }
+
+    jsonObj["frequencies"] = stringFreqs;
 }
