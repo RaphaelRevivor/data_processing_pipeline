@@ -15,8 +15,8 @@ class DataCleaner:
     :attribute runfiles r: Object which enables file reading in bazel environments.
     """
     def __init__(self, output_dir=None):
-        self.filename = ""
-        self.filetype = ""
+        self.filename = None
+        self.filetype = None
         self.output_dir = output_dir
         self.filecontent = []
         self.r = runfiles.Create()
@@ -36,28 +36,14 @@ class DataCleaner:
             raise ValueError("Unsupported filetype")
         
     """
-    :Method to initialize the terminal arguments to call tests
-    """
-    def initArgs(self):
-        self.parser.add_argument("filepath", help = "Path to the input file")
-        self.parser.add_argument("--read-file-only", action="store_true", help="Reading a file without cleaning the data")
-
-    """
     Method to read content of file depending on the filetype.
     :param str filepath: filepath to the file which should be read.
     """
     def readFile(self, filepath): 
-
-        workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', 'data_processing_pipeline')
-        #workspace_root = os.environ.get('BUILD_WORKSPACE_DIRECTORY', "data_processing_pipeline")
-        #filepath = os.path.join(workspace_root, filepath)
-
+        print(f"===============================================================READING-FILEPATH: {filepath}===============================================================")
         data_location = self.r.Rlocation(filepath)
-
-        self.filetype = self.detect_filetype(filepath) 
-        
-        self.output = filepath.split(".")
-        self.output = f"{os.path.splitext(filepath)[0]}_cleaned{os.path.splitext(filepath)[1]}" #<filepath>_cleaned<csv/json>
+        self.filename = filepath
+        self.filetype = self.detect_filetype(filepath)
 
         self.filecontent.clear()
 
@@ -78,21 +64,35 @@ class DataCleaner:
     Method to write the content of self.filecontent to a filepath.
     """
     def writeFile(self):
-        workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', 'data_processing_pipeline')
+        workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', "./")
 
-        #Check if the current output path exists, if not create the directories
+        basename, ext = os.path.splitext(os.path.basename(self.filename)) # -> ('tests/python/example1', '.csv')
+        cleaned_filename = f"{basename}_cleaned{ext}" # -> 'tests/python/example1_cleaned.csv'
 
-        basename, ext = os.path.splitext(os.path.basename(self.filename))
-        cleaned_filename = f"{basename}_cleaned.{self.filetype}"
-
-        if self.output_dir: #If outputdir is provided
-            output_dir = os.path.join(workspace, self.output_dir)
-        else:
-            input_dir = os.path.dirname(self.filename)
-            output_dir = os.path.join(workspace, input_dir)
+        if self.output_dir is None:
+            print("No output directory passed \n")
         
-        os.makedirs(output_dir, exist_ok=True)
-        output_path = os.path.join(output_dir, cleaned_filename)
+        if self.output_dir:
+            #If output_dir is absolute, use it as is, else, join with workspace
+            output_dir = self.output_dir if os.path.isabs(self.output_dir) else os.path.join(workspace, self.output_dir) # This creates a output like: cwd/output/cleaned/
+
+        """
+        else:
+            input_dir = os.path.dirname(self.filename) # -> Returns a path like data_processing_pipeline/tests/python
+            output_dir = os.path.join(workspace, input_dir) # Right now creates output_dir like: <BUILD_SPACE_DIRECTORY>/data_processing_pipeline/, need to remove one data_processing_pipeline before joining
+        """     
+        print("Workspace: " + workspace + '\n'
+              "Cleaned filename: " + cleaned_filename + '\n'
+              "Output dir: " + output_dir + '\n'
+              "self.filename " + self.filename + '\n'
+              "basename: " + basename + '\n'
+              "ext: " + ext + '\n'
+              )
+        
+        os.makedirs(output_dir, exist_ok=True) #Makes dir as specified above
+        output_path = os.path.join(output_dir, cleaned_filename) # -> '<workspace>/output/cleaned/tests/python/example1_cleaned.csv, Hmm still results in -> <workspace>/output/cleaned/tests/python/_cleaned 
+
+         
 
         if(self.filetype == "csv"):
             with(open(output_path, mode='w')) as file:
@@ -154,15 +154,14 @@ def main():
     parser.add_argument("--read-file-only", action="store_true", help="Only read the file and not clean")
     parser.add_argument("--output-dir", default=None, help="Optional directory to write cleaned ouput files to (default: same directory as input)")
     args = parser.parse_args()
-    cleaner = DataCleaner()
+    cleaner = DataCleaner(output_dir=args.output_dir) # Pass the output_dir here
 
     if args.read_file_only:
         cleaner.readFile(filepath=args.filepath)
     else:
         cleaner.readFileAndClean(filepath=args.filepath)
     
-    return parser.parse_args()
+    return args
 
 if __name__ == '__main__':
     args = main()
-    #cleaner = DataCleaner(args.filepath, output_dir=args.output_dir)

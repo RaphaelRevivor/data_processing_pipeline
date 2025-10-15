@@ -5,7 +5,7 @@ default_args = [
         "--disable-warnings",
         "-v", 
         "--tb=short",
-        "-color=yes",
+        "--color=yes",
         "-rfEP",
     ] 
 
