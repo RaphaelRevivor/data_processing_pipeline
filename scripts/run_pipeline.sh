@@ -4,6 +4,7 @@
 set -e
 
 INPUT_FILE="$1" #$1 is the first argument, in this scenario the filepath
+OUTPUT_DIR="$2"
 
 if [-z $INPUT_FILE]; then
     echo "Usage: bazel run //scripts:run_pipeline <input-file>"
@@ -41,10 +42,22 @@ bazel run $CLI_TARGET -- $INPUT_FILE
 #"$CLI_BIN" "$INPUT_FILE"
 
 echo "Running Python data cleaner tool on $INPUT_FILE..."
-bazel run $PY_TARGET -- $INPUT_FILE  "--output-dir=outputs/cleaned"
+bazel run $PY_TARGET -- $INPUT_FILE  "--output-dir=$OUTPUT_DIR"
 
-# bazel-bin/scripts/run_pipeline.sh data_processing_pipeline/tests/python/example1.json
+echo "Generating report of $INPUT_FILE..."
+
+#Build report generator with output dir of cleaner in build file
+
+#Run report generator with output directory as param
+
+echo "Pipeline finished, check $OUTPUT_DIR for results"
 
 echo "====================PIPELINE-SUCCESSFUL===================="
 
+
 chmod +x scripts/run_pipeline.sh
+
+#TO RUN:
+
+# bash scripts/run_pipeline.sh <inputfile_directory> <output_directory>
+# example: bash scripts/run_pipeline.sh data_processing_pipeline/tests/python/example3.csv output/tests
