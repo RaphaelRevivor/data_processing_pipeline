@@ -37,3 +37,5 @@ jobs:
         with:
           name: test-logs
           path: bazel-testlogs/tests/**/test.log
+      - name: run pipeline
+        run: bash scripts/run_pipeline.sh tests/python/example1.json output/test

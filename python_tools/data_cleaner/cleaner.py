@@ -40,7 +40,6 @@ class DataCleaner:
     :param str filepath: filepath to the file which should be read.
     """
     def readFile(self, filepath): 
-        print(f"===============================================================READING-FILEPATH: {filepath}===============================================================")
         data_location = self.r.Rlocation(filepath)
         self.filename = filepath
         self.filetype = self.detect_filetype(filepath)
@@ -81,13 +80,13 @@ class DataCleaner:
             input_dir = os.path.dirname(self.filename) # -> Returns a path like data_processing_pipeline/tests/python
             output_dir = os.path.join(workspace, input_dir) # Right now creates output_dir like: <BUILD_SPACE_DIRECTORY>/data_processing_pipeline/, need to remove one data_processing_pipeline before joining
         """     
-        print("Workspace: " + workspace + '\n'
-              "Cleaned filename: " + cleaned_filename + '\n'
-              "Output dir: " + output_dir + '\n'
-              "self.filename " + self.filename + '\n'
-              "basename: " + basename + '\n'
-              "ext: " + ext + '\n'
-              )
+        #print("Workspace: " + workspace + '\n'
+        #      "Cleaned filename: " + cleaned_filename + '\n'
+        #      "Output dir: " + output_dir + '\n'
+        #      "self.filename " + self.filename + '\n'
+        #      "basename: " + basename + '\n'
+        #      "ext: " + ext + '\n'
+        #      )
         
         os.makedirs(output_dir, exist_ok=True) #Makes dir as specified above
         output_path = os.path.join(output_dir, cleaned_filename) # -> '<workspace>/output/cleaned/tests/python/example1_cleaned.csv, Hmm still results in -> <workspace>/output/cleaned/tests/python/_cleaned 

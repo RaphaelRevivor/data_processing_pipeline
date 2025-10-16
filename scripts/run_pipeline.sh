@@ -21,7 +21,7 @@ echo "====================RUNNING-PIPELINE-ON-$INPUT_FILE===================="
 
 echo "Fetching directories..."
 
-WORKSPACE_DIR="$(bazel info workspace)"
+WORKSPACE_DIR="$(bazel info workspace)/"
 BIN_DIR="$(bazel info bazel-bin)"
 
 
@@ -37,12 +37,12 @@ bazel build $CLI_TARGET $PY_TARGET
 
 echo "Running C++ CLI tool on $INPUT_FILE..."
 #Call using bazel instead of direct path to bin
-bazel run $CLI_TARGET -- $INPUT_FILE
+bazel run $CLI_TARGET -- $WORKSPACE_DIR$INPUT_FILE
 
 #"$CLI_BIN" "$INPUT_FILE"
 
 echo "Running Python data cleaner tool on $INPUT_FILE..."
-bazel run $PY_TARGET -- $INPUT_FILE  "--output-dir=$OUTPUT_DIR"
+bazel run $PY_TARGET -- $WORKSPACE_DIR$INPUT_FILE  "--output-dir=$OUTPUT_DIR"
 
 echo "Generating report of $INPUT_FILE..."
 

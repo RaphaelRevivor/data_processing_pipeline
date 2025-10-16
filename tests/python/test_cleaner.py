@@ -2,7 +2,7 @@ from python_tools.data_cleaner.cleaner import DataCleaner
 
 
 def test_handleNaNsCSV():
-    cleaner = DataCleaner() #Hmm this now needs to be passed an output_dir for writing the cleaned file to
+    cleaner = DataCleaner("tests/python") #Hmm this now needs to be passed an output_dir for writing the cleaned file to
     cleaner.readFile("data_processing_pipeline/tests/python/example1.csv")
     cleaner.handleNaNs()
     cleaner.writeFile()
@@ -14,7 +14,7 @@ def test_handleNaNsCSV():
     ]
 
 def test_normalizeTextCSV():
-    cleaner = DataCleaner()
+    cleaner = DataCleaner("tests/python")
     cleaner.readFile("data_processing_pipeline/tests/python/example2.csv")
     cleaner.normalizeText()
     cleaner.writeFile()
@@ -30,7 +30,7 @@ def test_normalizeTextCSV():
 
 
 def test_handleNaNsJSON():
-    cleaner = DataCleaner()
+    cleaner = DataCleaner("tests/python")
     cleaner.readFile("data_processing_pipeline/tests/python/example1.json")
     cleaner.handleNaNs()
     cleaner.writeFile()
@@ -44,7 +44,7 @@ def test_handleNaNsJSON():
 
 
 def test_normalizeTextJSON():
-    cleaner = DataCleaner()
+    cleaner = DataCleaner("tests/python")
     cleaner.readFile("data_processing_pipeline/tests/python/example2.json")
     cleaner.normalizeText()
     cleaner.writeFile()
@@ -59,7 +59,7 @@ def test_normalizeTextJSON():
 
 
 def test_completeCleaningCSV():
-    cleaner = DataCleaner()
+    cleaner = DataCleaner("tests/python")
     cleaner.readFileAndClean("data_processing_pipeline/tests/python/example3.csv")
 
     assert cleaner.filecontent == [
@@ -70,7 +70,7 @@ def test_completeCleaningCSV():
 ]
 
 def test_completeCleaningJSON():
-    cleaner = DataCleaner() 
+    cleaner = DataCleaner("tests/python") 
     cleaner.readFileAndClean("data_processing_pipeline/tests/python/example3.json")
 
     assert cleaner.filecontent == [
