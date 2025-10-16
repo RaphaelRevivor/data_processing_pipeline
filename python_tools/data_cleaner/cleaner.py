@@ -73,20 +73,7 @@ class DataCleaner:
         
         if self.output_dir:
             #If output_dir is absolute, use it as is, else, join with workspace
-            output_dir = self.output_dir if os.path.isabs(self.output_dir) else os.path.join(workspace, self.output_dir) # This creates a output like: cwd/output/cleaned/
-
-        """
-        else:
-            input_dir = os.path.dirname(self.filename) # -> Returns a path like data_processing_pipeline/tests/python
-            output_dir = os.path.join(workspace, input_dir) # Right now creates output_dir like: <BUILD_SPACE_DIRECTORY>/data_processing_pipeline/, need to remove one data_processing_pipeline before joining
-        """     
-        #print("Workspace: " + workspace + '\n'
-        #      "Cleaned filename: " + cleaned_filename + '\n'
-        #      "Output dir: " + output_dir + '\n'
-        #      "self.filename " + self.filename + '\n'
-        #      "basename: " + basename + '\n'
-        #      "ext: " + ext + '\n'
-        #      )
+            output_dir = self.output_dir if os.path.isabs(self.output_dir) else os.path.join(workspace, self.output_dir) # This creates a output like: cwd/output/cleaned/     
         
         os.makedirs(output_dir, exist_ok=True) #Makes dir as specified above
         output_path = os.path.join(output_dir, cleaned_filename) # -> '<workspace>/output/cleaned/tests/python/example1_cleaned.csv, Hmm still results in -> <workspace>/output/cleaned/tests/python/_cleaned 

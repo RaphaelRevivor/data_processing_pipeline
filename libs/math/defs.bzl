@@ -6,7 +6,7 @@ def _gen_stats_impl(ctx):
         inputs = ctx.files.data,
         outputs = [out],
         # pass input and output file name as arguments
-        arguments = [ctx.attr.data[0].path, out.path],
+        arguments = [ctx.files.data[0].path, out.path],
         executable = ctx.executable.tool,
         tools = [ctx.executable.tool],
         use_default_shell_env = True,
