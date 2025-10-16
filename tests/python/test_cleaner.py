@@ -2,8 +2,8 @@ from python_tools.data_cleaner.cleaner import DataCleaner
 
 
 def test_handleNaNsCSV():
-    cleaner = DataCleaner("tests/python") #Hmm this now needs to be passed an output_dir for writing the cleaned file to
-    cleaner.readFile("data_processing_pipeline/tests/python/example1.csv")
+    cleaner = DataCleaner("tests/python")
+    cleaner.readFile("tests/python/example1.csv")
     cleaner.handleNaNs()
     cleaner.writeFile()
 
@@ -15,7 +15,7 @@ def test_handleNaNsCSV():
 
 def test_normalizeTextCSV():
     cleaner = DataCleaner("tests/python")
-    cleaner.readFile("data_processing_pipeline/tests/python/example2.csv")
+    cleaner.readFile("tests/python/example2.csv")
     cleaner.normalizeText()
     cleaner.writeFile()
 
@@ -31,7 +31,7 @@ def test_normalizeTextCSV():
 
 def test_handleNaNsJSON():
     cleaner = DataCleaner("tests/python")
-    cleaner.readFile("data_processing_pipeline/tests/python/example1.json")
+    cleaner.readFile("tests/python/example1.json")
     cleaner.handleNaNs()
     cleaner.writeFile()
     
@@ -45,7 +45,7 @@ def test_handleNaNsJSON():
 
 def test_normalizeTextJSON():
     cleaner = DataCleaner("tests/python")
-    cleaner.readFile("data_processing_pipeline/tests/python/example2.json")
+    cleaner.readFile("tests/python/example2.json")
     cleaner.normalizeText()
     cleaner.writeFile()
 
@@ -60,7 +60,7 @@ def test_normalizeTextJSON():
 
 def test_completeCleaningCSV():
     cleaner = DataCleaner("tests/python")
-    cleaner.readFileAndClean("data_processing_pipeline/tests/python/example3.csv")
+    cleaner.readFileAndClean("tests/python/example3.csv")
 
     assert cleaner.filecontent == [
         {'id': '1', 'name': 'alice', 'age': '30', 'score': '88'},
@@ -71,7 +71,7 @@ def test_completeCleaningCSV():
 
 def test_completeCleaningJSON():
     cleaner = DataCleaner("tests/python") 
-    cleaner.readFileAndClean("data_processing_pipeline/tests/python/example3.json")
+    cleaner.readFileAndClean("tests/python/example3.json")
 
     assert cleaner.filecontent == [
         {'id': 1, 'name': 'alice', 'age': 30, 'score': 88},

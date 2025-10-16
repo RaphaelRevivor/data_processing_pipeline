@@ -28,7 +28,7 @@ cc_binary(
 
 # usage: bazel build //libs/math:generate_stats_file
 gen_stats(
-  name = "generate_stats_file",
+  name = "generate_stats_pipeline",
   # take the cc_binary as exec tool
   tool = ":generate_stats",
   data = [
