@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
     }
 
     string filePath = argv[1];
-    
+    //filePath = "data_processing_pipeline/" + filePath;
     int totalSize = filePath.size();
     int suffixSize = 4;
 

@@ -32,7 +32,7 @@ gen_stats(
   # take the cc_binary as exec tool
   tool = ":generate_stats",
   data = [
-    "//examples:example.json",
+    "//output/test:example1_cleaned.json",
   ],
   visibility = [
     "//:__subpackages__",
