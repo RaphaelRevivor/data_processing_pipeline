@@ -39,8 +39,8 @@ class DataCleaner:
     Method to read content of file depending on the filetype.
     :param str filepath: filepath to the file which should be read.
     """
-    def readFile(self, filepath): 
-        data_location = self.r.Rlocation(f"_main/{filepath}")
+    def readFile(self, filepath):
+        data_location = self.r.Rlocation(os.path.normpath(filepath))
         self.filename = filepath
         self.filetype = self.detect_filetype(filepath)
 
@@ -65,18 +65,17 @@ class DataCleaner:
     def writeFile(self):
         workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', "./")
 
-        basename, ext = os.path.splitext(os.path.basename(self.filename)) # -> ('tests/python/example1', '.csv')
-        cleaned_filename = f"{basename}_cleaned{ext}" # -> 'tests/python/example1_cleaned.csv'
+        basename, ext = os.path.splitext(os.path.basename(self.filename))
+        cleaned_filename = f"{basename}_cleaned{ext}"
 
         if self.output_dir is None:
             print("No output directory passed \n")
         
         if self.output_dir:
-            #If output_dir is absolute, use it as is, else, join with workspace
-            output_dir = self.output_dir if os.path.isabs(self.output_dir) else os.path.join(workspace, self.output_dir) # This creates a output like: cwd/output/cleaned/     
+            output_dir = self.output_dir if os.path.isabs(self.output_dir) else os.path.join(workspace, self.output_dir)     
         
-        os.makedirs(output_dir, exist_ok=True) #Makes dir as specified above
-        output_path = os.path.join(output_dir, cleaned_filename) # -> '<workspace>/output/cleaned/tests/python/example1_cleaned.csv, Hmm still results in -> <workspace>/output/cleaned/tests/python/_cleaned 
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join(output_dir, cleaned_filename)
 
          
 
@@ -140,7 +139,7 @@ def main():
     parser.add_argument("--read-file-only", action="store_true", help="Only read the file and not clean")
     parser.add_argument("--output-dir", default=None, help="Optional directory to write cleaned ouput files to (default: same directory as input)")
     args = parser.parse_args()
-    cleaner = DataCleaner(output_dir=args.output_dir) # Pass the output_dir here
+    cleaner = DataCleaner(output_dir=args.output_dir) 
 
     if args.read_file_only:
         cleaner.readFile(filepath=args.filepath)
