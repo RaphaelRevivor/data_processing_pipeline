@@ -37,5 +37,9 @@ jobs:
         with:
           name: test-logs
           path: bazel-testlogs/tests/**/test.log
+
+      - name: make pipeline script executable
+        run: chmod 755 scripts/run_pipeline.sh
+        
       - name: run pipeline
         run: ./scripts/run_pipeline.sh tests/python/example1.json output/test
