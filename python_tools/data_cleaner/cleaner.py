@@ -40,8 +40,7 @@ class DataCleaner:
     :param str filepath: filepath to the file which should be read.
     """
     def readFile(self, filepath):
-        workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', None)
-
+        workspace = os.environ.get('TEST_WORKSPACE', None)
 
         filepath = os.path.normpath(filepath)
         filepath = f"{workspace}/{filepath}" if workspace and not os.path.isabs(filepath) else filepath

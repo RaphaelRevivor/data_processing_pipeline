@@ -11,7 +11,7 @@ pytest_test(
         "//tests/python/pytest:pytest_wrapper",
     ],
     imports = ["."],
-    data = glob(["*.csv", "*.json"])
+    data = [":testdata"],
 )
 
 filegroup(
