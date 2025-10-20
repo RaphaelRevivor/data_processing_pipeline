@@ -7,8 +7,9 @@ class ReportGenerator():
     """
     Class that reads a JSON file and generates an HTML report of the data.
     """
-    def __init__(self, output_dir=""):
+    def __init__(self, output_dir="", input_file="output.json"):
         self.data = {}
+        self.input_file = input_file
 
         workspace = os.environ.get("BUILD_WORKSPACE_DIRECTORY", "./")
 
@@ -22,7 +23,7 @@ class ReportGenerator():
     """
     def read_JSON_file(self):
         r = runfiles.Create()
-        path = r.Rlocation("data_processing_pipeline/libs/math/output.json")
+        path = r.Rlocation("data_processing_pipeline/libs/math/" + self.input_file)
 
         with open(path) as file:
             self.data = json.load(file)

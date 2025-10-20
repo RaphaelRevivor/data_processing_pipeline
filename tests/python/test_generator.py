@@ -2,7 +2,7 @@ from python_tools.report_generator.generator import ReportGenerator
 import os
 
 def test_generated_file():
-    rg = ReportGenerator("tests/python")
+    rg = ReportGenerator("tests/python", "output_generate_stats_file.json")
     rg.read_JSON_file()
     rg.handle_empty_values()
     rg.generate_HTML_file()

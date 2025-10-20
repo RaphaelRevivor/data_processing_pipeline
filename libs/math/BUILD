@@ -40,7 +40,7 @@ gen_stats(
 )
 
 gen_stats(
-  name = "generate_stats_file_test",
+  name = "generate_stats_file_empty",
   # take the cc_binary as exec tool
   tool = ":generate_stats",
   data = [

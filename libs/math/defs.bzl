@@ -1,5 +1,6 @@
 def _gen_stats_impl(ctx):
-    out = ctx.actions.declare_file("output.json")
+    outputFile = "output_" + ctx.attr.name + ".json"
+    out = ctx.actions.declare_file(outputFile)
 
     # run cc_binary here
     ctx.actions.run(
