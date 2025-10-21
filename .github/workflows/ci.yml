@@ -31,8 +31,10 @@ jobs:
       - name: build and run example
         run: bazel run examples:example
       - name: build and run google tests and pytests
+        if: success() || failure()
         run: bazel test tests/... --test_output=all
       - name: upload test logs
+        if: success() || failure()
         uses: actions/upload-artifact@v4
         with:
           name: test-logs
