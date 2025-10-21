@@ -26,6 +26,12 @@ jobs:
           bazelisk-cache: true
           disk-cache: ${{ github.workflow }}
           repository-cache: true
+      - name: install lcov with minimal requirements
+        run: |
+          sudo apt-get update -qq
+          echo "set man-db/auto-update false" | sudo debconf-communicate
+          sudo dpkg-reconfigure man-db
+          sudo apt-get install -y --no-install-recommends lcov
       - name: compile pip requirements
         run: bazel run requirements.update
       - name: build and run example
@@ -39,3 +45,15 @@ jobs:
         with:
           name: test-logs
           path: bazel-testlogs/tests/**/test.log
+      - name: run code coverage and generate HTML report
+        if: success() || failure()
+        run: |
+          bazel coverage tests/... --combined_report=lcov --instrumentation_filter=//libs,//python_tools --test_output=errors
+          cp bazel-out/_coverage/_coverage_report.dat cov.info
+          genhtml cov.info -o cov_report
+      - name: upload cov report as artifact
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cov-report
+          path: cov_report
