@@ -12,10 +12,12 @@ cc_binary(
   data = [
     "example.csv",
     "example.json",
+    "empty.json"
   ]
 )
 
 exports_files([
     "example.csv",
     "example.json",
+    "empty.json"
 ])

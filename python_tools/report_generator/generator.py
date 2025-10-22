@@ -4,22 +4,50 @@ import os
 import argparse
 
 class ReportGenerator():
-    def __init__(self, output_dir):
+    """
+    Class that reads a JSON file and generates an HTML report of the data.
+    """
+    def __init__(self, output_dir="", input_file="output.json"):
         self.data = {}
-        self.output_dir = output_dir
+        self.input_file = input_file
 
+        workspace = os.environ.get("BUILD_WORKSPACE_DIRECTORY", "./")
+
+        if not os.path.isabs(output_dir):
+            output_dir = os.path.join(workspace, output_dir)
+
+        self.absolute_file_path = os.path.join(output_dir, "report.html")
+
+    """
+    Reads a JSON file and stores the data.
+    """
     def read_JSON_file(self):
         r = runfiles.Create()
-        path = r.Rlocation("data_processing_pipeline/libs/math/output.json")
+        path = r.Rlocation("data_processing_pipeline/libs/math/" + self.input_file)
 
         with open(path) as file:
             self.data = json.load(file)
 
+    """
+    Reads the finished HTML report and returns it as a string.
+    """
+    def read_HTML_test_file(self):
+        with open(self.absolute_file_path, "r", encoding="utf-8") as f:
+            html_content = f.read()
+
+        return html_content
+    
+    """
+    Replaces empty data with string 'Value/s can not be found'.
+    """
     def handle_empty_values(self):
         for key in self.data:
             if self.data.get(key) == -1.0 or self.data.get(key) == [] or self.data.get(key) == {}:
                 self.data[key] = "Value/s can not be found"
 
+    """
+    Generates the HTML report in the workplace directory.
+    """
     def generate_HTML_file(self):
         content = f"""
         <!DOCTYPE html>
@@ -78,24 +106,18 @@ class ReportGenerator():
         </html>
         """
 
-        workspace = os.environ.get("BUILD_WORKSPACE_DIRECTORY", "./")
-
-        if not os.path.isabs(self.output_dir):
-            self.output_dir = os.path.join(workspace, self.output_dir)
-        
-        os.makedirs(self.output_dir, exist_ok=True)
-
-        output_file_path = os.path.join(self.output_dir, "report.html")
-
-        with open(output_file_path, "w", encoding="utf-8") as file:
+        with open(self.absolute_file_path, "w", encoding="utf-8") as file:
             file.write(content)
 
 def main():
     argparser = argparse.ArgumentParser(description="Parses arguments")
-    argparser.add_argument("output_dir", help="Path to output directory")
+    argparser.add_argument("output_dir", nargs="?", default=None, help="Path to output directory")
     args = argparser.parse_args()
 
-    rg = ReportGenerator(args.output_dir)
+    if args.output_dir is None:
+        rg = ReportGenerator()
+    else:
+        rg = ReportGenerator(args.output_dir)
 
     rg.read_JSON_file()
     rg.handle_empty_values()
