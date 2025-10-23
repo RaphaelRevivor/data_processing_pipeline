@@ -6,7 +6,7 @@ import argparse
 from python.runfiles import runfiles
 
 
-class DataCleaner: 
+class DataCleaner:
     """
     Class to read, clean and write the content of csv or json files.
     :atribute str filename: Name of the file being processed.
@@ -19,6 +19,7 @@ class DataCleaner:
         self.filetype = ""
         self.filecontent = []
         self.r = runfiles.Create()
+        self.output = ""
 
     """
     :Method to detect if the read file is a csv or json file. 
@@ -27,42 +28,34 @@ class DataCleaner:
     """
     def detect_filetype(self, filepath):
         file_ending = filepath.split(".")[1]
-        if(file_ending == "csv"):
+        if file_ending == "csv":
             return "csv"
-        elif(file_ending == "json"):
+        if file_ending == "json":
             return "json"
-        else: 
-            raise ValueError("Unsupported filetype")
-        
-    """
-    :Method to initialize the terminal arguments to call tests
-    """
-    def initArgs(self):
-        self.parser.add_argument("filepath", help = "Path to the input file")
-        self.parser.add_argument("--read-file-only", action="store_true", help="Reading a file without cleaning the data")
+        raise ValueError("Unsupported filetype")
 
     """
     Method to read content of file depending on the filetype.
     :param str filepath: filepath to the file which should be read.
     """
-    def readFile(self, filepath): 
+    def readFile(self, filepath):
         workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', 'data_processing_pipeline')
 
         data_location = self.r.Rlocation(f"{workspace}/{filepath}")
 
-        self.filetype = self.detect_filetype(filepath) 
+        self.filetype = self.detect_filetype(filepath)
         self.output = filepath.split(".")
-        self.output = f"{self.output[0]}_cleaned.{self.output[1]}" 
+        self.output = f"{self.output[0]}_cleaned.{self.output[1]}"
 
         self.filecontent.clear()
 
-        if(self.filetype == "csv"):
-            with(open(data_location, "r")) as file:
+        if self.filetype == "csv":
+            with(open(data_location, "r", encoding="utf-8")) as file:
                 csv_reader = csv.DictReader(file)
-                self.filecontent = [row for row in csv_reader]
+                self.filecontent = list(csv_reader)
 
-        elif(self.filetype == "json"):
-            with(open(data_location, "r")) as file:
+        elif self.filetype == "json":
+            with(open(data_location, "r", encoding="utf-8")) as file:
                 self.filecontent = json.load(file)
 
         else:
@@ -77,16 +70,16 @@ class DataCleaner:
 
         data_location = self.r.Rlocation(f"{workspace}/{self.output}")
 
-        if(self.filetype == "csv"):
-            with(open(data_location, mode='w')) as file:
+        if self.filetype == "csv" :
+            with(open(data_location, mode='w', encoding="utf-8")) as file:
                 csv_writer = csv.DictWriter(file, fieldnames=self.filecontent[0].keys())
                 csv_writer.writeheader()
                 csv_writer.writerows(self.filecontent)
 
-        elif(self.filetype == "json"):
-            with(open(data_location, mode='w')) as file:
+        elif self.filetype == "json" :
+            with(open(data_location, mode='w', encoding="utf-8")) as file:
                 json.dump(self.filecontent, file)
-    
+
     """
     Method to allow for users to override the path which the class writes to.
     """
@@ -96,33 +89,33 @@ class DataCleaner:
     """
     Method to drop a row if it contains any NaN, none or Null values.
     """
-    def handleNaNs(self): 
-        if self.filetype == "csv": 
+    def handleNaNs(self):
+        if self.filetype == "csv":
             self.filecontent = [
                 row for row in self.filecontent
                 if not any(value is None or value == '' for value in row.values())
             ]
 
-        elif self.filetype == "json":   
-            self.filecontent = [        
-                row for row in self.filecontent 
-                if not any(value == None for value in row.values())
+        elif self.filetype == "json":
+            self.filecontent = [
+                row for row in self.filecontent
+                if not any(value is None for value in row.values())
             ]
 
     """
     Method to normalize text in a row, lower case and remove white space 
     """
-    def normalizeText(self): 
+    def normalizeText(self):
         for row in self.filecontent:
             for key, value in row.items():
-                if(isinstance(row[key], str)):
+                if isinstance(row[key], str):
                     row[key] = value.lower().replace(" ", "")
 
     """
     Method to do a complete reading and cleaning of a file.
     :param str filepath: filepath to the file which will be cleaned.
     """
-    def readFileAndClean(self, filepath):   
+    def readFileAndClean(self, filepath):
         self.readFile(filepath)
         self.normalizeText()
         self.handleNaNs()

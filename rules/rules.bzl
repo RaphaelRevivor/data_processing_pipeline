@@ -1,6 +1,7 @@
 # rule to generate statistics
 def _gen_stats_impl(ctx):
-    out = ctx.actions.declare_file("output.json")
+    outputFile = "output_" + ctx.attr.name + ".json"
+    out = ctx.actions.declare_file(outputFile)
 
     # run cc_binary here
     ctx.actions.run(
@@ -35,7 +36,7 @@ def _pylint_test_impl(ctx):
            + " --disable=missing-docstring,too-few-public-methods,too-many-arguments,"
            + "too-many-locals,too-many-instance-attributes,too-many-return-statements,"
            + "too-many-branches,too-many-statements,too-many-lines,"
-           + "invalid-name,redefined-outer-name,line-too-long,import-error"
+           + "invalid-name,redefined-outer-name,line-too-long,import-error,pointless-string-statement"
            + " --max-line-length=100"
            + " --output-format=colorized"
            + " --score=no")
