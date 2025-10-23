@@ -25,14 +25,25 @@ gen_stats = rule(
     },
 )
 
-# rule to run pylint on the current folder
-def _pylint_check_impl(ctx):
+# rule to run pylint on the current folder,
+# this rule can only see python files in sub-dirs that does not contain BUILD file
+def _pylint_test_impl(ctx):
     bash_script = ctx.outputs.executable
 
-    # find all the python files under the current folder and pass to pylint
-    # $BUILD_WORKSPACE_DIRECTORY gets cwd, and ctx.label.package gets the path relative to the root (workspace) dir
-    content_str = "#!/usr/bin/env bash\n" + "pylint --rcfile=$BUILD_WORKSPACE_DIRECTORY/.pylintrc " + "$(find $BUILD_WORKSPACE_DIRECTORY/" + ctx.label.package + " -type f -name '*.py')\n"
-    contents = (content_str)
+    # directly pass the pylintrc config here
+    cmds = ("pylint --persistent=n --ignore=tests,build,dist,__pycache__,__init__.py"
+           + " --disable=missing-docstring,too-few-public-methods,too-many-arguments,"
+           + "too-many-locals,too-many-instance-attributes,too-many-return-statements,"
+           + "too-many-branches,too-many-statements,too-many-lines,"
+           + "invalid-name,redefined-outer-name,line-too-long,import-error"
+           + " --max-line-length=100"
+           + " --output-format=colorized"
+           + " --score=no")
+
+    for item in ctx.files.data:
+      cmds += " $RUNFILES_DIR/$TEST_WORKSPACE/" + item.path
+
+    contents = "#!/usr/bin/env bash\n" + cmds + "\n"
 
     ctx.actions.write(
       output = bash_script,
@@ -43,9 +54,14 @@ def _pylint_check_impl(ctx):
     return [DefaultInfo(
         executable = bash_script,
         files = depset([bash_script]),
+        runfiles = ctx.runfiles(files = ctx.files.data)
     )]
 
-pylint_check = rule(
-    implementation = _pylint_check_impl,
+pylint_test = rule(
+    implementation = _pylint_test_impl,
     executable = True,
+    test = True,
+    attrs = {
+        "data": attr.label_list(allow_files = True),
+    },
 )
