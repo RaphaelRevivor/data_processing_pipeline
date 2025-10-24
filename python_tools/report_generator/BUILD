@@ -1,3 +1,5 @@
+load("//rules:rules.bzl", "pylint_test")
+
 py_binary(
   name = "generator_pipeline",
   main = "generator.py",
@@ -32,4 +34,9 @@ py_binary(
     "//libs/math:generate_stats_file_empty",
   ],
   visibility = ["//:__subpackages__"],
+)
+
+pylint_test(
+  name = "report_generator_pylint_test",
+  data = glob(["**/*.py"]),
 )

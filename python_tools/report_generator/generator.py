@@ -1,8 +1,7 @@
-from python.runfiles import runfiles
 import json
 import os
 import argparse
-
+from python.runfiles import runfiles
 class ReportGenerator():
     """
     Class that reads a JSON file and generates an HTML report of the data.
@@ -25,7 +24,7 @@ class ReportGenerator():
         r = runfiles.Create()
         path = r.Rlocation("data_processing_pipeline/libs/math/" + self.input_file)
 
-        with open(path) as file:
+        with open(path, encoding="utf-8") as file:
             self.data = json.load(file)
 
     """

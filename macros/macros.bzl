@@ -1,17 +1,16 @@
 load("@rules_python//python:defs.bzl", "py_test")
-#load("@my_python_deps//:requirements.py", "requirement")
 
 default_args = [
         "--capture=no",
         "--disable-warnings",
         "-v", 
         "--tb=short",
-        "-color=yes",
+        "--color=yes",
         "-rfEP",
     ] 
 
 
-def pytest_test(name, srcs, deps = [], extra_args = [], data = [], **kwargs):
+def pytest_test(name, srcs, deps = [], args=[], data = [], **kwargs):
 
     """
     CALL PYTEST
@@ -21,13 +20,13 @@ def pytest_test(name, srcs, deps = [], extra_args = [], data = [], **kwargs):
         name = name,
 
         srcs = srcs + [
-            "//python_tools/pytest:pytest_wrapper"
+            "//tests/python/pytest:pytest_wrapper"
         ],
 
-        main = "//python_tools/pytest:pytest_wrapper.py",
+        main = "//tests/python/pytest:pytest_wrapper.py",
 
         #Some default flags set
-        args = default_args + extra_args,
+        args = default_args + args,
 
         deps = deps,
 
@@ -35,3 +34,4 @@ def pytest_test(name, srcs, deps = [], extra_args = [], data = [], **kwargs):
         **kwargs,
 
     )
+
