@@ -63,9 +63,21 @@ jobs:
           path: cov_report
 
       - name: use doxygen to generate documentation
+        if: success() || failure()
         run: doxygen ./Doxyfile
       - name: upload doxygen html folder as artifact
         uses: actions/upload-artifact@v4
         with:
           name: doxygen-documentation
           path: html/
+
+      - name: generate version.txt file
+        if: success() || failure()
+        run: bazel build libs/utils:get_commit_sha
+      - name: copy version.txt
+        run: cp ./bazel-bin/libs/utils/version.txt .
+      - name: upload version.txt as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: version-file
+          path: ./version.txt
