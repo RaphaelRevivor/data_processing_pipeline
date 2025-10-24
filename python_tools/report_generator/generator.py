@@ -111,13 +111,11 @@ class ReportGenerator():
 
 def main():
     argparser = argparse.ArgumentParser(description="Parses arguments")
-    argparser.add_argument("output_dir", nargs="?", default=None, help="Path to output directory")
+    argparser.add_argument("--output_dir", nargs="?", default="", help="Path to output directory")
+    argparser.add_argument("--input_file", nargs="?", default="output.json", help="Path to input file")
     args = argparser.parse_args()
 
-    if args.output_dir is None:
-        rg = ReportGenerator()
-    else:
-        rg = ReportGenerator(args.output_dir)
+    rg = ReportGenerator(args.output_dir, args.input_file)
 
     rg.read_JSON_file()
     rg.handle_empty_values()

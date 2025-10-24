@@ -11,6 +11,7 @@ pytest_test(
         "//tests/python/pytest:pytest_wrapper",
     ],
     imports = ["."],
+    data = [":testdata"],
 )
 
 pytest_test(

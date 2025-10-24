@@ -9,14 +9,15 @@ from python.runfiles import runfiles
 class DataCleaner: 
     """
     Class to read, clean and write the content of csv or json files.
-    :atribute str filename: Name of the file being processed.
-    :atribute str filetype: csv or json depending on filenames ending.
-    :atribute list filecontent: empty list representeing the content of the file being read.
-    :atribute runfiles r: Object which enables file reading in bazel environments.
+    :attribute str filename: Name of the file being processed.
+    :attribute str filetype: csv or json depending on filenames ending.
+    :attribute list filecontent: empty list representeing the content of the file being read.
+    :attribute runfiles r: Object which enables file reading in bazel environments.
     """
-    def __init__(self):
-        self.filename = ""
-        self.filetype = ""
+    def __init__(self, output_dir=None):
+        self.filename = None
+        self.filetype = None
+        self.output_dir = output_dir
         self.filecontent = []
         self.r = runfiles.Create()
 
@@ -35,24 +36,18 @@ class DataCleaner:
             raise ValueError("Unsupported filetype")
         
     """
-    :Method to initialize the terminal arguments to call tests
-    """
-    def initArgs(self):
-        self.parser.add_argument("filepath", help = "Path to the input file")
-        self.parser.add_argument("--read-file-only", action="store_true", help="Reading a file without cleaning the data")
-
-    """
     Method to read content of file depending on the filetype.
     :param str filepath: filepath to the file which should be read.
     """
-    def readFile(self, filepath): 
-        workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', 'data_processing_pipeline')
+    def readFile(self, filepath):
+        workspace = os.environ.get('TEST_WORKSPACE', None)
 
-        data_location = self.r.Rlocation(f"{workspace}/{filepath}")
-
-        self.filetype = self.detect_filetype(filepath) 
-        self.output = filepath.split(".")
-        self.output = f"{self.output[0]}_cleaned.{self.output[1]}" 
+        filepath = os.path.normpath(filepath)
+        filepath = f"{workspace}/{filepath}" if workspace and not os.path.isabs(filepath) else filepath
+    
+        data_location = self.r.Rlocation(filepath)
+        self.filename = filepath
+        self.filetype = self.detect_filetype(filepath)
 
         self.filecontent.clear()
 
@@ -73,18 +68,30 @@ class DataCleaner:
     Method to write the content of self.filecontent to a filepath.
     """
     def writeFile(self):
-        workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', 'data_processing_pipeline')
+        workspace = os.environ.get('BUILD_WORKSPACE_DIRECTORY', "./")
 
-        data_location = self.r.Rlocation(f"{workspace}/{self.output}")
+        basename, ext = os.path.splitext(os.path.basename(self.filename))
+        cleaned_filename = f"{basename}_cleaned{ext}"
+
+        if self.output_dir is None:
+            print("No output directory passed \n")
+        
+        if self.output_dir:
+            output_dir = self.output_dir if os.path.isabs(self.output_dir) else os.path.join(workspace, self.output_dir)     
+        
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join(output_dir, cleaned_filename)
+
+         
 
         if(self.filetype == "csv"):
-            with(open(data_location, mode='w')) as file:
+            with(open(output_path, mode='w')) as file:
                 csv_writer = csv.DictWriter(file, fieldnames=self.filecontent[0].keys())
                 csv_writer.writeheader()
                 csv_writer.writerows(self.filecontent)
 
         elif(self.filetype == "json"):
-            with(open(data_location, mode='w')) as file:
+            with(open(output_path, mode='w')) as file:
                 json.dump(self.filecontent, file)
     
     """
@@ -135,13 +142,16 @@ def main():
     parser = argparse.ArgumentParser(description="Clean CSV/JSON files")
     parser.add_argument("filepath", help="Path to the input file")
     parser.add_argument("--read-file-only", action="store_true", help="Only read the file and not clean")
+    parser.add_argument("--output-dir", default=None, help="Optional directory to write cleaned ouput files to (default: same directory as input)")
     args = parser.parse_args()
-    cleaner = DataCleaner()
+    cleaner = DataCleaner(output_dir=args.output_dir) 
 
     if args.read_file_only:
         cleaner.readFile(filepath=args.filepath)
     else:
         cleaner.readFileAndClean(filepath=args.filepath)
+    
+    return args
 
 if __name__ == '__main__':
-    main()
+    args = main()
