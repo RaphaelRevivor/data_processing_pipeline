@@ -1,7 +1,5 @@
 # TO RUN: ./scripts/run_pipeline.sh tests/python/example1.json output/test
 
-# example: ./scripts/run_pipeline.sh data_processing_pipeline/tests/python/example3.csv output/tests
-
 # Order of running pipeline cpp_cli_tool --> data_cleaner --> report_generator 
 
 set -e
