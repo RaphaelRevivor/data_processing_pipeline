@@ -26,14 +26,17 @@ jobs:
           bazelisk-cache: true
           disk-cache: ${{ github.workflow }}
           repository-cache: true
-      - name: install lcov with minimal requirements
+      - name: compile pip requirements
+        run: bazel run requirements.update
+
+      - name: install lcov and doxygen with minimal requirements
         run: |
           sudo apt-get update -qq
           echo "set man-db/auto-update false" | sudo debconf-communicate
           sudo dpkg-reconfigure man-db
           sudo apt-get install -y --no-install-recommends lcov
-      - name: compile pip requirements
-        run: bazel run requirements.update
+          sudo apt-get install -y --no-install-recommends doxygen graphviz
+
       - name: build and run example
         run: bazel run examples:example
       - name: build and run google tests and pytests
@@ -45,6 +48,7 @@ jobs:
         with:
           name: test-logs
           path: bazel-testlogs/tests/**/test.log
+
       - name: run code coverage and generate HTML report
         if: success() || failure()
         run: |
@@ -57,3 +61,11 @@ jobs:
         with:
           name: cov-report
           path: cov_report
+
+      - name: use doxygen to generate documentation
+        run: doxygen ./Doxyfile
+      - name: upload doxygen html folder as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: doxygen-documentation
+          path: html/
