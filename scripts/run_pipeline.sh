@@ -37,8 +37,8 @@ bazel run $PY_TARGET -- $WORKSPACE_DIR$INPUT_FILE  "--output-dir=$OUTPUT_DIR"
 
 echo "Generating report of $INPUT_FILE..."
 
-echo "Pipeline finished, check $OUTPUT_DIR for results"
-
 bazel run //python_tools/report_generator:generator_pipeline -- --output_dir $OUTPUT_DIR --input_file output_generate_stats_file_pipeline.json
+
+echo "Pipeline finished, check $(realpath $OUTPUT_DIR) for results"
 
 echo "====================PIPELINE-SUCCESSFUL===================="

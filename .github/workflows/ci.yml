@@ -49,4 +49,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pipeline-results
-          path: ./output/test/*.{json,html}
+          path: |
+            ./output/test/*.json
+            ./output/test/*.html
