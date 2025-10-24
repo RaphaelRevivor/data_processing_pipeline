@@ -62,6 +62,6 @@ cc_library(
     ":json_parser",
     ":csv_parser",
   ],
-  visibility = ["//libs/math:__pkg__"],
   includes = ["."],
+  visibility = ["//:__subpackages__"],
 )

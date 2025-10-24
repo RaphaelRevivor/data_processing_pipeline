@@ -40,6 +40,7 @@ jobs:
       - name: build and run example
         run: bazel run examples:example
       - name: build and run google tests and pytests
+        id: tests
         if: success() || failure()
         run: bazel test tests/... --test_output=all
       - name: upload test logs
@@ -49,8 +50,35 @@ jobs:
           name: test-logs
           path: bazel-testlogs/tests/**/test.log
 
-      - name: run code coverage and generate HTML report
+      - name: make pipeline script executable
         if: success() || failure()
+        run: chmod 755 scripts/run_pipeline.sh
+      - name: run pipeline
+        id: pipeline
+        if: success() || failure()
+        run: ./scripts/run_pipeline.sh tests/python/example1.json output/test
+      - name: upload pipeline results
+        if: steps.pipeline.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-results
+          path: |
+            ./output/test/*.json
+            ./output/test/*.html
+
+      - name: generate version.txt file
+        if: success() || failure()
+        run: bazel build libs/utils:get_commit_sha
+      - name: copy version.txt
+        run: cp ./bazel-bin/libs/utils/version.txt .
+      - name: upload version.txt as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: version-file
+          path: ./version.txt
+
+      - name: run code coverage and generate HTML report
+        if: steps.tests.outcome == 'success'
         run: |
           bazel coverage tests/... --combined_report=lcov --instrumentation_filter=//libs,//python_tools --test_output=errors
           cp bazel-out/_coverage/_coverage_report.dat cov.info
@@ -66,18 +94,8 @@ jobs:
         if: success() || failure()
         run: doxygen ./Doxyfile
       - name: upload doxygen html folder as artifact
+        if: success() || failure()
         uses: actions/upload-artifact@v4
         with:
           name: doxygen-documentation
           path: html/
-
-      - name: generate version.txt file
-        if: success() || failure()
-        run: bazel build libs/utils:get_commit_sha
-      - name: copy version.txt
-        run: cp ./bazel-bin/libs/utils/version.txt .
-      - name: upload version.txt as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: version-file
-          path: ./version.txt
