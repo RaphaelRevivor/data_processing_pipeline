@@ -14,6 +14,30 @@ pytest_test(
     data = [":testdata"],
 )
 
+pytest_test(
+    name = "test_generator",
+    srcs = ["test_generator.py"],
+    deps = [
+        "//python_tools/report_generator:generator",
+        "@pip//pytest",
+        "@rules_python//python/runfiles",
+        "//tests/python/pytest:pytest_wrapper",
+    ],
+    imports = ["."],
+)
+
+pytest_test(
+    name = "test_generator_empty",
+    srcs = ["test_generator_empty.py"],
+    deps = [
+        "//python_tools/report_generator:generator_empty",
+        "@pip//pytest",
+        "@rules_python//python/runfiles",
+        "//tests/python/pytest:pytest_wrapper",
+    ],
+    imports = ["."],
+)
+
 filegroup(
     name = "testdata",
     srcs = glob(["*.csv", "*.json"]),
