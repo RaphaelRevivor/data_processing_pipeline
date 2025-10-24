@@ -39,6 +39,6 @@ echo "Generating report of $INPUT_FILE..."
 
 echo "Pipeline finished, check $OUTPUT_DIR for results"
 
-bazel run //python_tools/report_generator:generator $OUTPUT_DIR
+bazel run //python_tools/report_generator:generator_pipeline -- --output_dir $OUTPUT_DIR --input_file output_generate_stats_file_pipeline.json
 
 echo "====================PIPELINE-SUCCESSFUL===================="

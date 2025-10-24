@@ -28,11 +28,23 @@ cc_binary(
 
 # usage: bazel build //libs/math:generate_stats_file
 gen_stats(
-  name = "generate_stats_pipeline",
+  name = "generate_stats_file_pipeline",
   # take the cc_binary as exec tool
   tool = ":generate_stats",
   data = [
     "//output/test:example1_cleaned.json",
+  ],
+  visibility = [
+    "//:__subpackages__",
+  ]
+)
+
+gen_stats(
+  name = "generate_stats_file",
+  # take the cc_binary as exec tool
+  tool = ":generate_stats",
+  data = [
+    "//examples:example.csv",
   ],
   visibility = [
     "//:__subpackages__",

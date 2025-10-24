@@ -42,6 +42,11 @@ jobs:
 
       - name: make pipeline script executable
         run: chmod 755 scripts/run_pipeline.sh
-        
       - name: run pipeline
         run: ./scripts/run_pipeline.sh tests/python/example1.json output/test
+      - name: upload pipeline results
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-results
+          path: ./output/test/*.{json,html}
