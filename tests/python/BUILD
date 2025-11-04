@@ -1,5 +1,5 @@
 load("@rules_python//python:defs.bzl", "py_test")
-load("//tests/python:macros.bzl", "pytest_test")
+load("//macros:macros.bzl", "pytest_test")
 
 pytest_test(
     name = "test_cleaner",

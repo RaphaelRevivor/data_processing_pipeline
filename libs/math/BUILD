@@ -1,4 +1,4 @@
-load('//libs/math:defs.bzl', 'gen_stats')
+load('//rules:rules.bzl', 'gen_stats')
 
 cc_library(
   name = "stats",

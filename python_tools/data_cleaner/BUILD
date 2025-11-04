@@ -1,3 +1,6 @@
+load("//rules:rules.bzl", "pylint_test")
+
+
 py_library(
     name = "cleaner_lib",
     srcs = ["cleaner.py"],
@@ -26,4 +29,9 @@ py_binary(
 
     data = ["//tests/python:testdata"],
 
+)
+
+pylint_test(
+  name = "data_cleaner_pylint_test",
+  data = glob(["**/*.py"]),
 )
